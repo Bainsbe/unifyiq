@@ -63,4 +63,3 @@
      -H "Content-Type: application/x-www-form-urlencoded" \
      -d "question=what is the status of project skynet?"
     ```
--- example POST request
