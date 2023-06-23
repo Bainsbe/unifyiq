@@ -7,9 +7,10 @@
 - MySQL
   - Please follow the instructions [here](/schema/database/README.md) to setup MySQL Database
 - Slackbot
-  - Please follow the instructions [here](/retrieval/slackbot/README.md) doc to setup slackbot
+  - Please follow the instructions [here](/unifyiq/retrieval/slackbot/README.md) doc to setup slackbot
 - Docker
   - Please follow the instructions [here](https://docs.docker.com/engine/install/)
+  - Launch the Docker Desktop application for command line tools to work
 - Airbyte
   - Please refer to [Getting Started](https://docs.airbyte.com/quickstart/deploy-airbyte) doc to setup airbyte in your
     machine
@@ -23,6 +24,7 @@
   - Please follow the instructions [here](https://milvus.io/docs/install_standalone-docker.md) to setup Milvus
     ```
       mkdir milvus && cd milvus
+      brew install wget
       wget https://github.com/milvus-io/milvus/releases/download/v2.2.10/milvus-standalone-docker-compose.yml -O docker-compose.yml
       docker-compose up -d
     ```
