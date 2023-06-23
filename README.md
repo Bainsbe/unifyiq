@@ -21,7 +21,7 @@ Please refer to this [document](https://docs.google.com/document/d/1FxmtSwrd_sa_
 
 ### Slack Workspace
 
-Slack is best way to keep in touch with community and ask your questions. [Join](https://join.slack.com/t/unifyiq/shared_invite/zt-1v4r8qd2b-6dc8BRKdJ3jemEY9iFnYVg). 
+Slack is best way to keep in touch with community and ask your questions. [Click here to join](https://join.slack.com/t/unifyiq/shared_invite/zt-1v4r8qd2b-6dc8BRKdJ3jemEY9iFnYVg). 
 
 ### Email
 
