@@ -42,11 +42,11 @@ Set the Connection Configs
 
 1. Insert the following row to the `unifyiq_configs` table after replacing the values in `[]` with the appropriate
    values
-    ```
-    INSERT INTO unifyiq_configs(name, connector_platform, connector_type, src_storage_type, src_path, dest_storage_type,
-                                dest_path, url_prefix, cron_expr, last_fetched_ts, is_enabled) 
-    VALUES('unifyiq_slack', 'AIRBYTE', 'SLACK', 'LOCAL', '/tmp/airbyte_local/unifyiq_slack/', 'LOCAL', '[HOME]/unifyiq/fetchers','https://[WORKSPACE].slack.com/', '0 2 * * *', 0, true);    
-    ```
+ ~~~~sql
+ INSERT INTO unifyiq_configs(name, connector_platform, connector_type, src_storage_type, src_path, dest_storage_type,
+                             dest_path, url_prefix, cron_expr, last_fetched_ts, is_enabled) 
+ VALUES('unifyiq_slack', 'AIRBYTE', 'SLACK', 'LOCAL', '/tmp/airbyte_local/unifyiq_slack/', 'LOCAL', '[HOME]/unifyiq/fetchers','https://[WORKSPACE].slack.com/', '0 2 * * *', 0, true);    
+ ~~~~
 
 ## Adding a new fetcher
 
