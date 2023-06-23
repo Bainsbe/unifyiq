@@ -10,3 +10,5 @@
       - mysql_secure_installation
 ### Build Database
   - Run the SQL Commands in [schema folder](/schema/database/) to setup the tables
+  - First run the commands in [Common.sql](/schema/database/Common.sql) followed by others
+    - mysql -u<user> -p < Common.sql
