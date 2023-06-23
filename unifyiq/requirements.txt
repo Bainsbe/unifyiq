@@ -1,0 +1,8 @@
+SQLAlchemy
+mysql-connector-python
+configparser
+jsonschema
+pymilvus
+openai
+Flask
+sentence_transformers
