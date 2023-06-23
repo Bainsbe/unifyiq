@@ -57,6 +57,7 @@
    pip3 install -r requirements.txt
     ```
 3. Follow the instruction [here](/unifyiq/fetchers/README.md) to setup slack data source
+   1. You can skip to [Configure your fetchers](/unifyiq/fetchers/README.md#configuring-the-fetcher) step if you are using Alternative Testing Setup
 4. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory and update the values
     ```commandline
     cp ~/unifyiq/unifyiq/conf/unifyiq.ini ~/
