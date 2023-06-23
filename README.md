@@ -23,6 +23,10 @@ Please refer to this [document](https://docs.google.com/document/d/1FxmtSwrd_sa_
 
 Slack is best way to keep in touch with community and ask your questions. [Join](https://join.slack.com/t/unifyiq/shared_invite/zt-1v4r8qd2b-6dc8BRKdJ3jemEY9iFnYVg). 
 
+### Email
+
+You can send your queries to info@unifyiq.ai
+
 ### Contributing
 
 If you've found a problem with UnifyIQ, please open a [GitHub issue](https://github.com/unifyiq/unifyiq/issues/new/choose). To contribute to UnifyIQ and see our Code of Conduct, please see the [contributing guide](CONTRIBUTIONS.md).
