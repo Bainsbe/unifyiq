@@ -29,7 +29,7 @@ You can send your queries to info@unifyiq.ai
 
 ### Contributing
 
-If you've found a problem with UnifyIQ, please open a [GitHub issue](https://github.com/unifyiq/unifyiq/issues/new/choose). To contribute to UnifyIQ and see our Code of Conduct, please see the [contributing guide](CONTRIBUTIONS.md).
+If you've found a problem with UnifyIQ, please open a [GitHub issue](https://github.com/unifyiq/unifyiq/issues/new/choose). To contribute to UnifyIQ and see our Code of Conduct, please see the [contributing guide](CONTRIBUTING.md).
 
 ### Security
 
