@@ -2,7 +2,7 @@ import os
 
 import openai
 
-from api import semantic_search
+from retrieval import semantic_search
 from utils.configs import get_open_ai_api_key
 from utils.constants import ID, SOURCE, TEXT, DISTANCE, NO_ANSWER
 

@@ -41,7 +41,7 @@ MIT License
 
 ### Thank You
 
-UnifyIQ would not be possible without the support and assistance of other open-source tools and companies. Visit our [thank you page](THANK-YOU.md) to learn more about how we build UnifyIQ.
+UnifyIQ would not be possible without the support and assistance of other open-source tools and companies.
 
 <a href="https://github.com/unifyiq/unifyiq/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=unifyiq/unifyiq"/>

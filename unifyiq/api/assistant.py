@@ -1,4 +1,4 @@
-from api.query_open_ai import search_and_generate_prompt, generate_answer_from_llm
+from retrieval.query_open_ai import search_and_generate_prompt, generate_answer_from_llm
 from utils.constants import NO_ANSWER
 
 
