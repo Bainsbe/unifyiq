@@ -70,9 +70,11 @@ class SlackAdapter(AirbyteAdapter):
                 parent_id = data['ts']
             text = ""
             # Get only plain text, ignore other types like links, mentions etc.
-            for e in data.get('blocks')[0].get('elements')[0].get('elements'):
-                if 'text' in e and e.get('type', 'unknown') == 'text':
-                    text += e.get('text')
+            if 'blocks' in data and 'elements' in data.get('blocks')[0] and 'elements' in \
+                    data.get('blocks')[0].get('elements')[0]:
+                for e in data.get('blocks')[0].get('elements')[0].get('elements'):
+                    if 'text' in e and e.get('type', 'unknown') == 'text':
+                        text += e.get('text')
             if text:
                 self.set_required_values_in_json(json_data=data, id_str=id_str, parent_id=parent_id, text=text,
                                                  url=self.get_slack_url(id_str), user=data['user'],

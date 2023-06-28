@@ -38,6 +38,16 @@ Set the Connection Configs
 2. Set the messages and threads streams to be Incremental | append
    ![Slack Connector](/resources/images/slack_airbyte_connector.png)
 
+## Adding a new fetcher to Airbyte from different new source
+
+1. Setup the source in Airbyte http://localhost:8000
+2. Create a new adapter that extends AirbyteAdapter
+3. Create the necessary metadata tables in the database and add to (schemas)[/schema/database/]
+4. Implement method `parse_jsonl` to parse the json file
+    1. Update the metadata
+    2. Output the JSON using `BaseAdapter.validate_and_write_json` and make sure the required fields are set
+       using `BaseAdapter.set_required_values_in_json` 
+
 ## Configuring the fetcher
 
 1. Insert the following row to the `unifyiq_configs` table after replacing the values in `[]` with the appropriate
@@ -47,13 +57,3 @@ Set the Connection Configs
                              dest_path, url_prefix, cron_expr, last_fetched_ts, is_enabled) 
  VALUES('unifyiq_slack', 'AIRBYTE', 'SLACK', 'LOCAL', '/tmp/airbyte_local/unifyiq_slack/', 'LOCAL', '[HOME]/unifyiq/fetchers','https://[WORKSPACE].slack.com/', '0 2 * * *', 0, true);    
  ~~~~
-
-## Adding a new fetcher
-
-1. Setup the source in Airbyte http://localhost:8000
-2. Create a new adapter that extends AirbyteAdapter
-3. Create the necessary metadata tables in the database and add to (schemas)[/schema/database/]
-4. Implement method `parse_jsonl` to parse the json file
-    1. Update the metadata
-    2. Output the JSON using `BaseAdapter.validate_and_write_json` and make sure the required fields are set
-       using `BaseAdapter.set_required_values_in_json` 
