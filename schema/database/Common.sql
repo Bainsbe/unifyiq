@@ -1,4 +1,4 @@
-CREATE DATABASE `unifyiq`;
+CREATE DATABASE IF NOT EXISTS `unifyiq`;
 
 CREATE TABLE IF NOT EXISTS `unifyiq`.`unifyiq_configs` (
   `id` INT NOT NULL AUTO_INCREMENT,
