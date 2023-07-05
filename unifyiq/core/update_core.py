@@ -11,7 +11,7 @@ from utils.file_utils import get_core_output_path_from_config
 
 configs = unifyiq_config_db.get_fetcher_configs()
 # TODO Assumes unifyiq will run no frequently than once a day
-current_date_hod = datetime.now().strftime("%Y-%m-%dT00:00:00")
+current_date_hod = datetime.now().strftime("%Y-%m-%dT00-00-00")
 
 vectors_store = Milvus()
 if delete_index_always():

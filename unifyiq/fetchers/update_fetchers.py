@@ -7,7 +7,7 @@ from utils.database import unifyiq_config_db
 from utils.file_utils import get_fetcher_output_path_from_config
 
 configs = unifyiq_config_db.get_fetcher_configs()
-current_date_hod = datetime.now().strftime("%Y-%m-%dT00:00:00")
+current_date_hod = datetime.now().strftime("%Y-%m-%dT00-00-00")
 
 for config in configs:
     print(f"Fetching data for {config.name} {config.connector_platform} - {config.connector_type}")
