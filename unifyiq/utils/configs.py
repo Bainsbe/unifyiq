@@ -44,3 +44,18 @@ def get_embedding_dimension():
 def get_open_ai_api_key():
     """Returns the openai api key from config file `unifyiq.ini`."""
     return config.get('LLM', 'open_ai_api_key')
+
+
+def get_slack_app_token():
+    """Returns the slack app token from config file `unifyiq.ini`."""
+    return config.get('Slackbot', 'app_token')
+
+
+def get_slack_bot_token():
+    """Returns the slack bot token from config file `unifyiq.ini`."""
+    return config.get('Slackbot', 'bot_token')
+
+
+def get_slack_client_signature():
+    """Returns the slack client signature from config file `unifyiq.ini`."""
+    return config.get('Slackbot', 'client_signature')
