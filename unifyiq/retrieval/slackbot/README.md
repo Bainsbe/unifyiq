@@ -7,7 +7,7 @@
 4. Chose the workspace if you are using multiple workspaces
 5. Upload the [manifest](unifyiq.yaml)
 6. Create and Install the app to your workplace
-7. Note the credentials for the slackbot that you will need for airbyte as well
+7. Note the credentials for the slackbot
     1. Client ID
     2. Signing Secret
     3. Access Token - Navigate to OAuth & Permissions under Features section of unifyiq app. Copy the token from "Bot
