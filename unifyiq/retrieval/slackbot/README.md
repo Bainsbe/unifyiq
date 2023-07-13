@@ -23,5 +23,9 @@
     ```commandline
     python3 -m retrieval.slackbot.unifyiq_bot
     ```
+2. For Mac, If there are any SSL errors that's preventing the server from starting, run the following command
+    ```commandline
+    /Applications/Python\ 3.10/Install\ Certificates.command
+    ```
 2. In any channel, type `@unifyiq <question>` to get the list of commands
     1. e.g. ```@unifyiq what is the status of project skynet```

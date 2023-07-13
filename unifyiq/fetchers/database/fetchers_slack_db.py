@@ -51,7 +51,7 @@ def get_current_channel_info():
     return channel_info
 
 
-def insert_channel_info(data):
+def insert_channel_info_to_db(data):
     """
     Insert channel info into database
     :param data: List of dicts with channel_id, name, topic, purpose, is_archived, is_private, is_channel, is_group, is_im, is_mpim
@@ -85,7 +85,7 @@ def insert_channel_info(data):
     session.commit()
 
 
-def update_channel_info(data):
+def update_channel_info_to_db(data):
     """
     Update channel info in database
     :param data: List of dicts with channel_id, name, topic, purpose, is_archived, is_private, is_channel, is_group, is_im, is_mpim

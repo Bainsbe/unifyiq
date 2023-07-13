@@ -41,6 +41,7 @@ oauth_config:
       - team:read
       - usergroups:read
       - users:read
+      - users:read.email
       - users:write
       - users.profile:read
 settings:

@@ -6,28 +6,17 @@ from slack_sdk.errors import SlackApiError
 
 from fetchers.adapters.base_adapter import BaseAdapter
 from fetchers.database.fetchers_slack_db import insert_channel_membership, \
-    get_current_channel_membership, delete_channel_membership, get_current_channel_info, update_channel_info, \
-    insert_channel_info
+    get_current_channel_membership, delete_channel_membership, get_current_channel_info, insert_channel_info_to_db, \
+    update_channel_info_to_db
 from utils import constants
 from utils.configs import get_slack_bot_token
 from utils.constants import MAX_ATTEMPTS_FOR_SLACK_API_CALL
 from utils.database import unifyiq_config_db
+from utils.file_utils import skip_index_file_name
 from utils.log_util import get_logger
+from utils.time_utils import get_slack_ts
 
-CHANNEL_MESSAGES = 1
-THREADS = 2
-CHANNELS = 3
-CHANNEL_MEMBERS = 4
-USERS = 5
-UNKNOWN = -1
-
-
-def get_date_from_ts(ts):
-    return datetime.fromtimestamp(int(float(ts))).strftime("%Y%m%d")
-
-
-def get_slack_ts(ts):
-    return "{:.6f}".format(ts)
+THREE_DAYS = 3 * 24 * 60 * 60
 
 
 class SlackAdapter(BaseAdapter):
@@ -35,81 +24,125 @@ class SlackAdapter(BaseAdapter):
     def __init__(self, config, version):
         super().__init__(config, version, get_logger(__name__))
         self.client = WebClient(token=get_slack_bot_token())
+        self.bot_user_id = self.client.auth_test()['user_id']
         self.attempts = {}
-        self.slack_start_ts = get_slack_ts(self.start_ts)
-        self.slack_end_ts = get_slack_ts(self.end_ts)
         self.curr_channel_info = {}
         self.curr_channel_membership = {}
         self.new_channel_info = []
         self.new_channel_membership = []
 
-    def load_metadata(self):
+    def load_metadata_from_db(self):
         self.curr_channel_info = get_current_channel_info()
         self.curr_channel_membership = get_current_channel_membership()
 
-    def save_metadata(self):
+    def save_metadata_to_db(self):
         self.update_channel_info()
         self.update_channel_membership()
 
     def fetch_and_save_raw_data(self):
-        self.fetch_conversations()
-        # self.fetch_threads("channel_id")
-        pass
+        self.fetch_channels(get_slack_ts(self.start_ts), get_slack_ts(self.end_ts),
+                            get_slack_ts(self.start_ts - THREE_DAYS))
 
-    def fetch_conversations(self):
-        # TODO: Ignore messages from bots
-        self.attempts['fetch_conversations'] = self.attempts.get('fetch_conversations', 0) + 1
+    def fetch_channels(self, slack_start_ts, slack_end_ts, thread_lookback_ts):
+        # TODO: Set start_ts / end_ts at channel level to handle failures
+        self.attempts['fetch_channels'] = self.attempts.get('fetch_channels', 0) + 1
         try:
             cursor = None
             while True:
-                result = self.client.conversations_list(cursor=cursor, exclude_archived=True)
+                # TODO: Remove public channel filter once we have a way to handle private channels
+                result = self.client.conversations_list(cursor=cursor, exclude_archived=True, types="public_channel")
                 channels = result["channels"]
                 for channel in channels:
-                    self.parse_channel_info(channel)
-                    # Extract messages from public channels
-                    if channel['is_channel'] and not channel['is_private']:
-                        self.fetch_conversation_messages(channel['id'])
-                        self.fetch_members(channel['id'])
-                if not result['response_metadata']['next_cursor']:
-                    break
-                cursor = result['response_metadata']['next_cursor']
-        except SlackApiError as e:
-            # handle slack rate limit
-            self.retry_slack_api(e, self.fetch_conversations)
-
-    def fetch_conversation_messages(self, conversation_id):
-        self.attempts['fetch_conversation_messages'] = self.attempts.get('fetch_conversation_messages', 0) + 1
-        try:
-            cursor = None
-            while True:
-                result = self.client.conversations_history(cursor=cursor, channel=conversation_id,
-                                                           oldest=self.slack_start_ts,
-                                                           latest=self.slack_end_ts)
-                conversation_history = result["messages"]
-                for conversation in conversation_history:
-                    message = self.parse_messages(conversation_id, conversation)
-                    if message:
-                        self.validate_and_write_json(message, "conversations")
+                    self.update_channel_info_metadata(channel)
+                    unifyiq_bot_in_channel = self.fetch_channel_members(channel['id'])
+                    if not unifyiq_bot_in_channel:
+                        # Add unifyiq bot to the public channel
+                        self.client.conversations_join(channel=channel['id'])
+                    self.fetch_channel_messages(channel['id'], slack_start_ts, slack_end_ts, thread_lookback_ts)
                 if not result['response_metadata'] or not result['response_metadata']['next_cursor']:
                     break
                 cursor = result['response_metadata']['next_cursor']
         except SlackApiError as e:
             # handle slack rate limit
-            self.retry_slack_api(e, self.fetch_conversation_messages, conversation_id)
+            self.retry_slack_api(e, self.fetch_channels, slack_start_ts, slack_end_ts, thread_lookback_ts)
 
-    def retry_slack_api(self, exception, function, *args, **kwargs):
-        if exception.response["error"] == "ratelimited":
-            retry_after = exception.response.headers["Retry-After"]
-            self.logger.error("Rate limited. Retrying in {} seconds".format(retry_after))
-            time.sleep(int(retry_after))
-            if self.attempts['fetch_conversations'] < MAX_ATTEMPTS_FOR_SLACK_API_CALL:
-                function(args, kwargs)
-            else:
-                self.logger.error("Max attempts reached for slack api call")
-        else:
-            self.logger.error("Error fetching conversations: {}".format(exception))
+    def fetch_channel_messages(self, channel_id, slack_start_ts, slack_end_ts, thread_lookback_ts):
+        self.attempts['fetch_channel_messages'] = self.attempts.get('fetch_channel_messages', 0) + 1
+        try:
+            cursor = None
+            while True:
+                result = self.client.conversations_history(cursor=cursor, channel=channel_id,
+                                                           oldest=thread_lookback_ts,
+                                                           latest=slack_end_ts)
+                messages = result["messages"]
+                for message in messages:
+                    file_name = "channels"
+                    # Store bot messages separately
+                    if message.get('bot_id') or message.get('subtype') == 'bot_message':
+                        file_name = skip_index_file_name("bot_messages")
+                    # Process thread replies for all messages including lookback messages
+                    if message.get('thread_ts') and message.get('latest_reply') and message.get(
+                            'latest_reply') > slack_start_ts:
+                        self.fetch_threads(channel_id, message['thread_ts'], slack_start_ts, slack_end_ts)
+                    # Process new messages only
+                    if message.get('ts') and slack_start_ts < message['ts'] < slack_end_ts:
+                        message = self.parse_message_response(channel_id, message)
+                        if message:
+                            self.validate_and_write_json(message, file_name)
+                if not result['response_metadata'] or not result['response_metadata']['next_cursor']:
+                    break
+                cursor = result['response_metadata']['next_cursor']
+        except SlackApiError as e:
+            # handle slack rate limit
+            self.retry_slack_api(e, self.fetch_channel_messages, channel_id, slack_start_ts, slack_end_ts,
+                                 thread_lookback_ts)
 
-    def parse_channel_info(self, data):
+    def fetch_channel_members(self, channel_id):
+        """
+        Fetches the members of a channel using slack client
+        """
+        unifyiq_bot_in_channel = False
+        self.attempts['fetch_members'] = self.attempts.get('fetch_members', 0) + 1
+        try:
+            cursor = None
+            while True:
+                result = self.client.conversations_members(cursor=cursor, channel=channel_id)
+                unifyiq_bot_in_channel |= self.update_membership_metadata(channel_id, result["members"])
+                if not result['response_metadata'] or not result['response_metadata']['next_cursor']:
+                    break
+                cursor = result['response_metadata']['next_cursor']
+        except SlackApiError as e:
+            # handle slack rate limit
+            self.retry_slack_api(e, self.fetch_channel_members, channel_id)
+        return unifyiq_bot_in_channel
+
+    def fetch_threads(self, channel_id, ts, slack_start_ts, slack_end_ts):
+        """
+        Fetches the threads of a channel using slack client
+        """
+        self.attempts['fetch_threads'] = self.attempts.get('fetch_threads', 0) + 1
+        try:
+            cursor = None
+            while True:
+                result = self.client.conversations_replies(cursor=cursor, channel=channel_id, ts=ts,
+                                                           oldest=slack_start_ts, latest=slack_end_ts)
+                messages = result["messages"]
+                for message in messages:
+                    file_name = "threads"
+                    # Store bot messages separately
+                    if message.get('bot_id') or message.get('subtype') == 'bot_message':
+                        file_name = skip_index_file_name("bot_threads")
+                    message = self.parse_thread_response(channel_id, message)
+                    if message:
+                        self.validate_and_write_json(message, file_name)
+                if not result['response_metadata'] or not result['response_metadata']['next_cursor']:
+                    break
+                cursor = result['response_metadata']['next_cursor']
+        except SlackApiError as e:
+            # handle slack rate limit
+            self.retry_slack_api(e, self.fetch_threads, channel_id, ts, slack_start_ts, slack_end_ts)
+
+    def update_channel_info_metadata(self, data):
         channel_id = data.get('id')
         info = {"channel_id": channel_id,
                 "name": data.get('name'),
@@ -130,24 +163,22 @@ class SlackAdapter(BaseAdapter):
             # Channel info has not changed
             self.curr_channel_info.pop(channel_id, None)
 
-    def parse_channel_members(self, data):
-        mid = data.get('member_id')
-        channel_id = data.get('channel_id')
-        if (channel_id, mid) not in self.curr_channel_membership:
-            # New member in channel. Should be inserted to DB
-            self.new_channel_membership.append({'channel_id': channel_id, 'member_id': mid})
-        # Mark the member as active
-        self.curr_channel_membership[(channel_id, mid)] = True
+    def update_membership_metadata(self, channel_id, members):
+        unifyiq_bot_in_channel = False
+        for mid in members:
+            if mid == self.bot_user_id:
+                unifyiq_bot_in_channel = True
+            if (channel_id, mid) not in self.curr_channel_membership:
+                # New member in channel. Should be inserted to DB
+                self.new_channel_membership.append({'channel_id': channel_id, 'member_id': mid})
+            # Mark the member as active
+            self.curr_channel_membership[(channel_id, mid)] = True
+        return unifyiq_bot_in_channel
 
-    @staticmethod
-    def parse_user_info(data, curr_mappings, new_mappings):
-        # TODO Add user metadata for org user matching
-        pass
-
-    def parse_messages(self, conversation_id, data):
+    def parse_message_response(self, channel_id, data):
         # ignore messages with subtypes like channel join etc.
         if 'subtype' not in data:
-            id_str = conversation_id + "." + data.get('ts')
+            id_str = channel_id + "." + data.get('ts')
             ts_int = int(float(data.get('ts')))
             if 'thread_ts' in data:
                 parent_id = data['thread_ts']
@@ -164,17 +195,17 @@ class SlackAdapter(BaseAdapter):
             if text:
                 self.set_required_values_in_json(json_data=data, id_str=id_str, parent_id=parent_id, text=text,
                                                  url=self.get_slack_url(id_str), user=data['user'],
-                                                 group=conversation_id, created_at=ts_int, last_updated_at=ts_int)
+                                                 group=channel_id, created_at=ts_int, last_updated_at=ts_int)
                 return data
             else:
                 return None
         else:
             return None
 
-    def parse_threads(self, data):
+    def parse_thread_response(self, channel_id, data):
         if 'thread_ts' in data and data['thread_ts'] != data['ts']:
             # process only threads and ignore regular messages
-            return self.parse_messages(data)
+            return self.parse_message_response(channel_id, data)
 
     def update_channel_membership(self):
         if len(self.curr_channel_membership) > 0:
@@ -189,35 +220,25 @@ class SlackAdapter(BaseAdapter):
 
     def update_channel_info(self):
         if len(self.curr_channel_info) > 0:
-            update_channel_info(self.curr_channel_info)
+            update_channel_info_to_db(self.curr_channel_info)
         if len(self.new_channel_info) > 0:
-            insert_channel_info(self.new_channel_info)
+            insert_channel_info_to_db(self.new_channel_info)
 
     def get_slack_url(self, id_str):
         parts = id_str.split(".")
         return self.config.url_prefix + "/archives/" + parts[0] + "/p" + parts[1] + parts[2]
 
-    def fetch_members(self, channel_id):
-        """
-        Fetches the members of a channel using slack client
-        """
-        self.attempts['fetch_members'] = self.attempts.get('fetch_members', 0) + 1
-        try:
-            cursor = None
-            while True:
-                result = self.client.conversations_members(cursor=cursor, channel=channel_id)
-                members = result["members"]
-                for member in members:
-                    self.curr_channel_membership[(channel_id, member)] = True
-                if not result['response_metadata']['next_cursor']:
-                    break
-                cursor = result['response_metadata']['next_cursor']
-        except SlackApiError as e:
-            # handle slack rate limit
-            self.retry_slack_api(e, self.fetch_conversations)
-
-    def fetch_threads(self, channel_id):
-        pass
+    def retry_slack_api(self, exception, function, *args, **kwargs):
+        if exception.response["error"] == "ratelimited":
+            retry_after = exception.response.headers["Retry-After"]
+            self.logger.error("Rate limited. Retrying in {} seconds".format(retry_after))
+            time.sleep(int(retry_after))
+            if self.attempts['fetch_channels'] < MAX_ATTEMPTS_FOR_SLACK_API_CALL:
+                function(args, kwargs)
+            else:
+                self.logger.error("Max attempts reached for slack api call")
+        else:
+            self.logger.error("Error fetching channels: {}".format(exception))
 
 
 if __name__ == '__main__':

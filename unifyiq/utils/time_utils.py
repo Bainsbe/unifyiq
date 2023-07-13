@@ -17,9 +17,15 @@ def get_cron_interval(cron_expr):
     return window_size.total_seconds()
 
 
-def get_ts_for_beginning_of_curr_day():
+def get_prev_cron_ts(cron_expr):
     """
-    Returns the timestamp in seconds for the beginning of the current day.
+    Returns the timestamp in seconds for the previous execution based on cron_expression.
     """
-    now = datetime.datetime.now()
-    return int(datetime.datetime(now.year, now.month, now.day).timestamp())
+    base_time = datetime.datetime.now()
+    cron = croniter(cron_expr, base_time)
+    previous_execution = cron.get_prev(datetime.datetime)
+    return int(previous_execution.timestamp())
+
+
+def get_slack_ts(ts):
+    return "{:.6f}".format(ts)

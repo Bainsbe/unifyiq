@@ -28,3 +28,4 @@ DISTANCE = "DISTANCE"
 NO_ANSWER = "Sorry, I don't have an answer"
 
 MAX_ATTEMPTS_FOR_SLACK_API_CALL = 20
+SKIP_INDEX_FILE_SUFFIX = ".skip"
