@@ -19,7 +19,7 @@ if delete_index_always():
     utility.drop_collection(MILVUS_COLLECTION_NAME)
 vectors_store.initialize_indexer()
 for config in configs:
-    print(f"Generating embeddings for {config.name} {config.connector_platform} - {config.connector_type}")
+    print(f"Generating embeddings for {config.name} - {config.connector_type}")
     update_embeddings(config, current_date_hod)
     print(f"Indexing to Milvus - {get_core_output_path_from_config(config, current_date_hod)}/embeddings.pkl")
     vectors_store.insert(f"{get_core_output_path_from_config(config, current_date_hod)}/embeddings.pkl")

@@ -1,12 +1,13 @@
 import os
 from pathlib import Path
 
+from utils.configs import get_unifyiq_output_path
 from utils.constants import SKIP_INDEX_FILE_SUFFIX
 
 
 def get_output_path_from_config(config, version):
     """Returns the output path from the config and version."""
-    return f"{config.dest_path}/unifyiq/{config.name}/{version}"
+    return f"{get_unifyiq_output_path()}/unifyiq/{config.name}/{version}"
 
 
 def get_fetcher_output_path_from_config(config, version):

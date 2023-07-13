@@ -245,6 +245,6 @@ if __name__ == '__main__':
     configs = unifyiq_config_db.get_fetcher_configs()
     current_date_hod = datetime.now().strftime("%Y-%m-%dT00-00-00")
     for config in configs:
-        if config.connector_platform == constants.CUSTOM and config.connector_type == constants.SLACK:
+        if config.connector_type == constants.SLACK:
             slack = SlackAdapter(config, current_date_hod)
             slack.fetcher()

@@ -27,7 +27,7 @@ destinations.
     2. fetch_and_save_raw_data
         1. Fetch the raw data from the source and save it to the local storage.
         2. Use `BaseAdapter.start_ts` and `BaseAdapter.end_ts` to determine the time range for incremental fetch
-           1. Process data that satisfy `BaseAdapter.start_ts` < `ts` < `BaseAdapter.end_ts`
+            1. Process data that satisfy `BaseAdapter.start_ts` < `ts` < `BaseAdapter.end_ts`
         3. Use `BaseAdapter.set_required_values_in_json` to make sure the required fields are set
         4. Use `BaseAdapter.validate_and_write_json` to write to the appropriate paths. This will fail if the required
            fields are not set
@@ -41,12 +41,9 @@ destinations.
 
 1. Insert the following row to the `unifyiq_configs` table after
 2. Replace the values in `[]` with the appropriate values
-    1. HOME - Your home folder or any location where you want the files to be stored
-    2. WORKSPACE - Slack Workspace
+    1. WORKSPACE - Slack Workspace
 
  ~~~~sql
- INSERT INTO unifyiq_configs(name, connector_platform, connector_type, dest_storage_type, dest_path, url_prefix,
-                             cron_expr, start_ts, last_fetched_ts, is_enabled) 
- VALUES('unifyiq_slack', 'CUSTOM', 'SLACK', 'LOCAL', '[HOME]/unifyiq-data/','https://[WORKSPACE].slack.com/',
-        '0 2 * * *', 1672560000, 0, true);    
+ INSERT INTO unifyiq_configs(name, connector_type, url_prefix, cron_expr, start_ts, last_fetched_ts, is_enabled)
+        VALUES('unifyiq_slack', 'SLACK','https://[WORKSPACE].slack.com/', '0 2 * * *', 1672560000, 0, true);
  ~~~~

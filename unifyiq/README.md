@@ -51,10 +51,13 @@
     1. **Note:** You can skip to [Configure your fetchers](/unifyiq/fetchers/README.md#configuring-the-fetcher) step if
        you are using Alternative Testing Setup
 
-4. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory and update the values
-    ```commandline
-    cp ~/unifyiq/unifyiq/conf/unifyiq.ini ~/
-    ```
+4. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory
+   ```commandline
+   cp ~/unifyiq/unifyiq/conf/unifyiq.ini ~/
+   ```
+    1. In ~/unifyiq.ini do the required changes.
+    2. Update the configs in UnifyIQ section according to your needs
+    3. Update the various keys and tokens in the config file
 5. Run the following command to consume the data
     ```commandline
     python3 -m fetchers.update_fetchers
@@ -75,4 +78,4 @@
     python3 -m retrieval.slackbot.unifyiq_bot
     ```
     1. In any channel, type `@unifyiq <question>` to get the list of commands
-       1. e.g. ```@unifyiq what is the status of project skynet```
+        1. e.g. ```@unifyiq what is the status of project skynet```

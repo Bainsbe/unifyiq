@@ -9,11 +9,9 @@ metadata = MetaData()
 fetchers_configs = Table('unifyiq_configs', metadata,
                          Column('id', Integer, primary_key=True),
                          Column('name', String(45), nullable=False),
-                         Column('connector_platform', String(45), nullable=False),
                          Column('connector_type', String(45), nullable=False),
-                         Column('dest_storage_type', String(45), nullable=False),
-                         Column('dest_path', String(255), nullable=False),
                          Column('url_prefix', String(255), nullable=False),
+                         # Not Supported, Uses global schedule in unifyiq.ini
                          Column('cron_expr', String(2048), nullable=False),
                          Column('start_ts', Integer, nullable=False),
                          Column('last_fetched_ts', Integer, nullable=False),

@@ -1,10 +1,44 @@
 import configparser
 from pathlib import Path
 
+from utils.constants import SUPPORTED_STORAGE_TYPES
+
 home_dir = str(Path.home())
 config = configparser.ConfigParser()
 out = config.read(f"{home_dir}/unifyiq.ini")
 SUPPORTED_DB_ENGINES = {'mysql': 'mysql+mysqlconnector'}
+
+
+def get_unifyiq_output_path():
+    """Returns the output path from the config file `unifyiq.ini`."""
+    return config.get('UnifyIQ', 'output_path')
+
+
+def get_log_dir():
+    """Returns the log dir from the config file `unifyiq.ini`."""
+    return config.get('UnifyIQ', 'log_dir')
+
+
+def get_admin_emails():
+    """Returns the admin emails from the config file `unifyiq.ini`."""
+    return config.get('UnifyIQ', 'admin_emails').split(',') if config.get('UnifyIQ', 'admin_emails') else []
+
+
+def get_log_level():
+    """Returns the log level from the config file `unifyiq.ini`."""
+    return config.get('UnifyIQ', 'log_level', fallback='INFO')
+
+
+def get_cron_schedule():
+    """Returns the cron schedule from the config file `unifyiq.ini`."""
+    return config.get('UnifyIQ', 'cron_schedule', fallback="0 0 * * *")
+
+
+def get_storage_type():
+    """Returns the storage type from the config file `unifyiq.ini`."""
+    storage_type = config.get('UnifyIQ', 'storage_type')
+    if storage_type not in SUPPORTED_STORAGE_TYPES:
+        raise ValueError(f"Unsupported storage type {storage_type}")
 
 
 def get_database_url():
