@@ -1,6 +1,7 @@
 # UnifyIQ - Knowledge Assistant
 
-## Pre-requisites
+## Stand alone setup
+### Pre-requisite
 
 - Python 3.10+
     - https://www.python.org/downloads/macos/ OR https://www.python.org/downloads/windows/
@@ -22,7 +23,7 @@
       ```
     - Run `docker-compose down` to bring it down
 
-## Alternative Testing Setup - TODO FIX THIS
+### Alternative Testing Setup - TODO FIX THIS
 
 - If you don't want to setup Slackbot, you can use the data in [resources/](/data/fetchers/slack) folder
 - Copy the files to `/tmp/airbyte_local/unifyiq_slack` folder
@@ -32,9 +33,7 @@
     ```
 - *This is just for testing the code and might not work for other data sources in the future*
 
-## Getting Started
-
-### Laptop Setup
+### Getting Started
 
 1. Clone the repo to your home directory. In following commands, modify the path to repo path if you are using a
    different path than home directory
@@ -82,7 +81,7 @@
     1. In any channel, type `@unifyiq <question>` to get the list of commands
         1. e.g. ```@unifyiq what is the status of project skynet```
 
-### AWS / Cloud Setup
+## AWS / Cloud Setup
 
 1. These instructions are tested in AWS. Should work in other cloud providers as well.
 2. Follow the instructions [here](/unifyiq/playbooks/README.md) to setup the infrastructure and start the services
