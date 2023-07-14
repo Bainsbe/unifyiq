@@ -29,13 +29,13 @@
     - `python3 -m pip install --user ansible`
 - Clone this repository
     - `git clone https://github.com/unifyiq/unifyiq.git`
-- Navigate to the ansible directory in the repository
-    - `cd unifyiq/playbooks`
 - Copy the config file to the home directory
     - `cp ~/unifyiq/conf/unifyiq.ini ~/`
+    - Update the paths in UnifyIQ section
     - Update the values in the config file with required mysql, slackbot and openai credentials
     - Update the milvus host with the private IP of the milvus instance if its a different machine
 - Run the playbook
+    - `cd unifyiq/playbooks`    
     - Playbook uses mysql credentials from the config file, so above step is required
     - Modify the `inventory` with correct IP address (Private IP) and key file path
     - `ansible-playbook playbook.yml`
