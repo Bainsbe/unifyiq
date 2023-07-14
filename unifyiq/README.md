@@ -34,6 +34,8 @@
 
 ## Getting Started
 
+### Laptop Setup
+
 1. Clone the repo to your home directory. In following commands, modify the path to repo path if you are using a
    different path than home directory
     ```commandline
@@ -79,3 +81,8 @@
     ```
     1. In any channel, type `@unifyiq <question>` to get the list of commands
         1. e.g. ```@unifyiq what is the status of project skynet```
+
+### AWS / Cloud Setup
+
+1. These instructions are tested in AWS. Should work in other cloud providers as well.
+2. Follow the instructions [here](/unifyiq/playbooks/README.md) to setup the infrastructure and start the services

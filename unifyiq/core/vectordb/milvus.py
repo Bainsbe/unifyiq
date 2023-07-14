@@ -23,7 +23,7 @@ class Milvus(VectorDB):
         if utility.has_collection(MILVUS_COLLECTION_NAME):
             self.collection = Collection(MILVUS_COLLECTION_NAME)
         else:
-            self.collection = None
+            self.initialize_indexer()
 
     def initialize_search(self):
         self.collection.load()

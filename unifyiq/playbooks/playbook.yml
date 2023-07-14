@@ -1,6 +1,23 @@
+- name: Update Packages
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      become_user: root
+      apt:
+        update_cache: yes
+
+    - name: Install packages
+      become_user: root
+      apt:
+        name: python3-pip
+        state: present
+
+
 - name: Install MySQL
   hosts: db
   become: yes
+  become_user: ubuntu
 
   vars:
     mysql_user: "{{lookup('ansible.builtin.ini', 'username', section='Database', file='/home/ubuntu/unifyiq.ini')}}"
@@ -11,24 +28,22 @@
       - /home/ubuntu/unifyiq/schema/database/SlackDB.sql
 
   tasks:
-    - name: Install MySQL server
+    - name: Install packages
+      become_user: root
       apt:
-        name: mysql-server
+        name:
+          - mysql-server
         state: present
 
     - name: Install MySQL client
+      become_user: root
       pip:
         name: PyMySQL
         state: present
         executable: pip3
 
-    - name: Create a database
-      mysql_db:
-        name: "{{mysql_db_name}}"
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        state: present
-
     - name: Create a MySQL user
+      become_user: root
       mysql_user:
         name: "{{mysql_user}}"
         login_unix_socket: /var/run/mysqld/mysqld.sock
@@ -36,10 +51,21 @@
         priv: "*.*:ALL"
         state: present
 
+    - name: Create a database
+      mysql_db:
+        login_user: "{{mysql_user}}"
+        login_password: "{{mysql_password}}"
+        login_host: localhost
+        login_port: 3306
+        name: "{{mysql_db_name}}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        state: present
+
     - name: Clone repository
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
+        version: daily-runs
 
     - name: Execute MySQL command file
       mysql_db:
@@ -58,22 +84,14 @@
   hosts: unifyiq
   gather_facts: true
   become: true
+  become_user: ubuntu
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-
-    - name: Install packages
-      apt:
-        name:
-          - python3-pip
-        state: present
-
     - name: Clone repository
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
+        update: yes
 
     - name: install dependencies from requirements.txt
       pip:
@@ -90,13 +108,11 @@
 - name: Install and configure Milvus
   hosts: milvus
   become: yes
+  become_user: ubuntu
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-
     - name: Install dependencies
+      become_user: root
       apt:
         name:
           - docker.io
@@ -114,6 +130,7 @@
         dest: /home/ubuntu/milvus/docker-compose.yml
 
     - name: Start Milvus container
+      become_user: root
       command: docker-compose up -d
       args:
         chdir: /home/ubuntu/milvus/
@@ -122,18 +139,9 @@
   hosts: unifyiq
   gather_facts: true
   become: true
+  become_user: ubuntu
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-
-    - name: Install packages
-      apt:
-        name:
-          - python3-pip
-        state: present
-
     - name: Clone repository
       git:
         repo: https://github.com/unifyiq/unifyiq.git
