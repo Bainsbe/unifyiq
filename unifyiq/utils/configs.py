@@ -4,9 +4,18 @@ from pathlib import Path
 from utils.constants import SUPPORTED_STORAGE_TYPES
 
 home_dir = str(Path.home())
-config = configparser.ConfigParser()
-out = config.read(f"{home_dir}/unifyiq.ini")
 SUPPORTED_DB_ENGINES = {'mysql': 'mysql+mysqlconnector'}
+
+
+def reload_config():
+    """Reloads the config file `unifyiq.ini`."""
+    global config
+    config = configparser.ConfigParser()
+    config.read(f"{home_dir}/unifyiq.ini")
+
+
+# Load the config file on import
+reload_config()
 
 
 def get_unifyiq_output_path():

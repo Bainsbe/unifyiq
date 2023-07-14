@@ -96,18 +96,18 @@ def process_short_conversations(input_files, embeddings_generator, output_path):
     fOut.close()
 
 
-def update_embeddings(config, version):
+def update_embeddings(source_config, version):
     """
     Update embeddings in vector store
-    :param config: Config object
+    :param source_config: Config object
     :param version: Date in format YYYY-MM-DDTHH:00:00
     :return:
     """
-    fetcher_output_path = get_fetcher_output_path_from_config(config, version)
+    fetcher_output_path = get_fetcher_output_path_from_config(source_config, version)
     input_files = get_jsonl_files(fetcher_output_path)
     embeddings_gen = SentenceTransformerEmbeddings()
-    output_path = get_core_output_path_from_config(config, version)
-    if config.connector_type in CONVERSATION_CONNECTORS:
+    output_path = get_core_output_path_from_config(source_config, version)
+    if source_config.connector_type in CONVERSATION_CONNECTORS:
         # Short conversations. Cluster to form snippets
         process_short_conversations(input_files, embeddings_gen, output_path)
         pass

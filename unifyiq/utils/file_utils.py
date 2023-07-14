@@ -10,9 +10,9 @@ def get_output_path_from_config(config, version):
     return f"{get_unifyiq_output_path()}/unifyiq/{config.name}/{version}"
 
 
-def get_fetcher_output_path_from_config(config, version):
+def get_fetcher_output_path_from_config(source_config, version):
     """Returns the fetcher output path from the config and version."""
-    output_path = f"{get_output_path_from_config(config, version)}/fetchers"
+    output_path = f"{get_output_path_from_config(source_config, version)}/fetchers"
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     return output_path

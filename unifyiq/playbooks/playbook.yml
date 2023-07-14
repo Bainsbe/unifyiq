@@ -65,6 +65,8 @@
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
+        version: main
+        update: yes
 
     - name: Execute MySQL command file
       mysql_db:
@@ -90,6 +92,7 @@
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
+        version: main
         update: yes
 
     - name: install dependencies from requirements.txt
@@ -145,6 +148,8 @@
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
+        version: main
+        update: yes
 
     - name: install dependencies from requirements.txt
       pip:

@@ -47,16 +47,16 @@ def get_end_ts_from_cron_expr(last_fetched_ts, cron_expr):
 
 class BaseAdapter(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self, config, version, logger=get_logger(__name__)):
-        self.config = config
+    def __init__(self, source_config, version, logger=get_logger(__name__)):
+        self.source_config = source_config
         self.version = version
         self.logger = logger
-        if config.last_fetched_ts > 0:
-            self.start_ts = config.last_fetched_ts
+        if source_config.last_fetched_ts > 0:
+            self.start_ts = source_config.last_fetched_ts
         else:
-            self.start_ts = config.start_ts
-        self.end_ts = get_end_ts_from_cron_expr(config.last_fetched_ts, config.cron_expr)
-        self.output_path = get_fetcher_output_path_from_config(config, version)
+            self.start_ts = source_config.start_ts
+        self.end_ts = get_end_ts_from_cron_expr(source_config.last_fetched_ts, source_config.cron_expr)
+        self.output_path = get_fetcher_output_path_from_config(source_config, version)
         self.output_files = {}
 
     @abstractmethod
@@ -82,7 +82,7 @@ class BaseAdapter(metaclass=ABCMeta):
         self.fetch_and_save_raw_data()
         self.save_metadata_to_db()
         self.close_files()
-        update_last_fetched_ts(self.config, self.end_ts)
+        update_last_fetched_ts(self.source_config, self.end_ts)
 
     def validate_and_write_json(self, json_data, file_name):
         if file_name not in self.output_files:

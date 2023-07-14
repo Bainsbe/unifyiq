@@ -19,19 +19,19 @@ def init_vector_store():
     return vectors_store
 
 
-def update_index(vectors_store, config, current_date_hod):
-    print(f"Generating embeddings for {config.name} - {config.connector_type}")
-    update_embeddings(config, current_date_hod)
-    print(f"Indexing to Milvus - {get_core_output_path_from_config(config, current_date_hod)}/embeddings.pkl")
-    vectors_store.insert(f"{get_core_output_path_from_config(config, current_date_hod)}/embeddings.pkl")
+def update_index(vectors_store, source_config, current_date_hod):
+    print(f"Generating embeddings for {source_config.name} - {source_config.connector_type}")
+    update_embeddings(source_config, current_date_hod)
+    print(f"Indexing to Milvus - {get_core_output_path_from_config(source_config, current_date_hod)}/embeddings.pkl")
+    vectors_store.insert(f"{get_core_output_path_from_config(source_config, current_date_hod)}/embeddings.pkl")
     print(f"Index Updated")
 
 
 if __name__ == '__main__':
-    configs = unifyiq_config_db.get_fetcher_configs()
+    source_configs = unifyiq_config_db.get_fetcher_configs()
     # TODO Assumes unifyiq will run no frequently than once a day
     current_date_hod = datetime.now().strftime("%Y-%m-%dT00-00-00")
     vector_store = init_vector_store()
-    for config in configs:
-        update_index(vector_store, config, current_date_hod)
+    for source_config in source_configs:
+        update_index(vector_store, source_config, current_date_hod)
     pass

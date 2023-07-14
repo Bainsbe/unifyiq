@@ -21,8 +21,8 @@ THREE_DAYS = 3 * 24 * 60 * 60
 
 class SlackAdapter(BaseAdapter):
 
-    def __init__(self, config, version):
-        super().__init__(config, version, get_logger(__name__))
+    def __init__(self, source_config, version):
+        super().__init__(source_config, version, get_logger(__name__))
         self.client = WebClient(token=get_slack_bot_token())
         self.bot_user_id = self.client.auth_test()['user_id']
         self.attempts = {}
@@ -80,8 +80,8 @@ class SlackAdapter(BaseAdapter):
                 for message in messages:
                     file_name = "channels"
                     # Store bot messages separately
-                    if message.get('bot_id') or message.get('subtype') == 'bot_message':
-                        file_name = skip_index_file_name("bot_messages")
+                    if self.is_bot_message(message):
+                        file_name = skip_index_file_name(file_name)
                     # Process thread replies for all messages including lookback messages
                     if message.get('thread_ts') and message.get('latest_reply') and message.get(
                             'latest_reply') > slack_start_ts:
@@ -99,6 +99,10 @@ class SlackAdapter(BaseAdapter):
             # handle slack rate limit
             self.retry_slack_api(e, self.attempts['fetch_channel_messages'], self.fetch_channel_messages, channel_id,
                                  slack_start_ts, slack_end_ts, thread_lookback_ts)
+
+    def is_bot_message(self, message):
+        return message.get('bot_id') or message.get('subtype') == 'bot_message' or message.get(
+            'user') == self.bot_user_id or self.bot_user_id in message.get('text')
 
     def fetch_channel_members(self, channel_id):
         """
@@ -134,8 +138,8 @@ class SlackAdapter(BaseAdapter):
                 for message in messages:
                     file_name = "threads"
                     # Store bot messages separately
-                    if message.get('bot_id') or message.get('subtype') == 'bot_message':
-                        file_name = skip_index_file_name("bot_threads")
+                    if self.is_bot_message(message):
+                        file_name = skip_index_file_name(file_name)
                     message = self.parse_thread_response(channel_id, message)
                     if message:
                         self.validate_and_write_json(message, file_name)
@@ -191,6 +195,7 @@ class SlackAdapter(BaseAdapter):
             else:
                 # This is a regular message and won't have a parent
                 parent_id = data['ts']
+            data['raw_text'] = data['text']
             text = ""
             # Get only plain text, ignore other types like links, mentions etc.
             if 'blocks' in data and 'elements' in data.get('blocks')[0] and 'elements' in \
@@ -232,7 +237,7 @@ class SlackAdapter(BaseAdapter):
 
     def get_slack_url(self, id_str):
         parts = id_str.split(".")
-        return self.config.url_prefix + "/archives/" + parts[0] + "/p" + parts[1] + parts[2]
+        return self.source_config.url_prefix + "/archives/" + parts[0] + "/p" + parts[1] + parts[2]
 
     def retry_slack_api(self, exception, attempt_count, function, *args):
         if exception.response["error"] == "ratelimited":
@@ -248,9 +253,9 @@ class SlackAdapter(BaseAdapter):
 
 
 if __name__ == '__main__':
-    configs = unifyiq_config_db.get_fetcher_configs()
+    source_configs = unifyiq_config_db.get_fetcher_configs()
     current_date_hod = datetime.now().strftime("%Y-%m-%dT00-00-00")
-    for config in configs:
-        if config.connector_type == constants.SLACK:
-            slack = SlackAdapter(config, current_date_hod)
+    for source_config in source_configs:
+        if source_config.connector_type == constants.SLACK:
+            slack = SlackAdapter(source_config, current_date_hod)
             slack.fetcher()
