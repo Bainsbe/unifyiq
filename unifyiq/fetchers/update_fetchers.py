@@ -11,7 +11,7 @@ def update_fetchers(config, current_date_hod):
     print(f"Fetching data for {config.name} - {config.connector_type}")
     if config.connector_type == constants.SLACK:
         adapter = SlackAdapter(config, current_date_hod)
-        adapter.fetch_and_save_raw_data()
+        adapter.fetcher()
     print(f"Done fetching data from {config.name} to {get_fetcher_output_path_from_config(config, current_date_hod)}")
 
 

@@ -28,7 +28,10 @@ def get_core_output_path_from_config(config, version):
 
 def get_jsonl_files(path):
     file_list = get_files_glob(path, '*.jsonl')
-    filtered_list = [file for file in file_list if not skip_index_file_name(file.name)]
+    filtered_list = []
+    for file in file_list:
+        if not is_skip_index_file(file.name):
+            filtered_list.append(file)
     return filtered_list
 
 

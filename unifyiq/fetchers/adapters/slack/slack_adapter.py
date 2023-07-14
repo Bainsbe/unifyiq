@@ -60,11 +60,13 @@ class SlackAdapter(BaseAdapter):
                         self.client.conversations_join(channel=channel['id'])
                     self.fetch_channel_messages(channel['id'], slack_start_ts, slack_end_ts, thread_lookback_ts)
                 if not result['response_metadata'] or not result['response_metadata']['next_cursor']:
+                    self.attempts['fetch_channels'] = 0
                     break
                 cursor = result['response_metadata']['next_cursor']
         except SlackApiError as e:
             # handle slack rate limit
-            self.retry_slack_api(e, self.fetch_channels, slack_start_ts, slack_end_ts, thread_lookback_ts)
+            self.retry_slack_api(e, self.attempts['fetch_channels'], self.fetch_channels, slack_start_ts, slack_end_ts,
+                                 thread_lookback_ts)
 
     def fetch_channel_messages(self, channel_id, slack_start_ts, slack_end_ts, thread_lookback_ts):
         self.attempts['fetch_channel_messages'] = self.attempts.get('fetch_channel_messages', 0) + 1
@@ -90,12 +92,13 @@ class SlackAdapter(BaseAdapter):
                         if message:
                             self.validate_and_write_json(message, file_name)
                 if not result['response_metadata'] or not result['response_metadata']['next_cursor']:
+                    self.attempts['fetch_channel_messages'] = 0
                     break
                 cursor = result['response_metadata']['next_cursor']
         except SlackApiError as e:
             # handle slack rate limit
-            self.retry_slack_api(e, self.fetch_channel_messages, channel_id, slack_start_ts, slack_end_ts,
-                                 thread_lookback_ts)
+            self.retry_slack_api(e, self.attempts['fetch_channel_messages'], self.fetch_channel_messages, channel_id,
+                                 slack_start_ts, slack_end_ts, thread_lookback_ts)
 
     def fetch_channel_members(self, channel_id):
         """
@@ -109,11 +112,12 @@ class SlackAdapter(BaseAdapter):
                 result = self.client.conversations_members(cursor=cursor, channel=channel_id)
                 unifyiq_bot_in_channel |= self.update_membership_metadata(channel_id, result["members"])
                 if not result['response_metadata'] or not result['response_metadata']['next_cursor']:
+                    self.attempts['fetch_members'] = 0
                     break
                 cursor = result['response_metadata']['next_cursor']
         except SlackApiError as e:
             # handle slack rate limit
-            self.retry_slack_api(e, self.fetch_channel_members, channel_id)
+            self.retry_slack_api(e, self.attempts['fetch_members'], self.fetch_channel_members, channel_id)
         return unifyiq_bot_in_channel
 
     def fetch_threads(self, channel_id, ts, slack_start_ts, slack_end_ts):
@@ -136,11 +140,13 @@ class SlackAdapter(BaseAdapter):
                     if message:
                         self.validate_and_write_json(message, file_name)
                 if not result['response_metadata'] or not result['response_metadata']['next_cursor']:
+                    self.attempts['fetch_threads'] = 0
                     break
                 cursor = result['response_metadata']['next_cursor']
         except SlackApiError as e:
             # handle slack rate limit
-            self.retry_slack_api(e, self.fetch_threads, channel_id, ts, slack_start_ts, slack_end_ts)
+            self.retry_slack_api(e, self.attempts['fetch_threads'], self.fetch_threads, channel_id, ts, slack_start_ts,
+                                 slack_end_ts)
 
     def update_channel_info_metadata(self, data):
         channel_id = data.get('id')
@@ -228,17 +234,17 @@ class SlackAdapter(BaseAdapter):
         parts = id_str.split(".")
         return self.config.url_prefix + "/archives/" + parts[0] + "/p" + parts[1] + parts[2]
 
-    def retry_slack_api(self, exception, function, *args, **kwargs):
+    def retry_slack_api(self, exception, attempt_count, function, *args):
         if exception.response["error"] == "ratelimited":
             retry_after = exception.response.headers["Retry-After"]
             self.logger.error("Rate limited. Retrying in {} seconds".format(retry_after))
-            time.sleep(int(retry_after))
-            if self.attempts['fetch_channels'] < MAX_ATTEMPTS_FOR_SLACK_API_CALL:
-                function(args, kwargs)
+            if attempt_count < MAX_ATTEMPTS_FOR_SLACK_API_CALL:
+                time.sleep(int(retry_after))
+                function(args)
             else:
                 self.logger.error("Max attempts reached for slack api call")
         else:
-            self.logger.error("Error fetching channels: {}".format(exception))
+            self.logger.error("Error fetching slack api: {}".format(exception))
 
 
 if __name__ == '__main__':

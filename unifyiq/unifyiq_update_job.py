@@ -11,7 +11,7 @@ from utils.database import unifyiq_config_db
 
 def run_application(version):
     configs = unifyiq_config_db.get_fetcher_configs()
-    current_date_hod = version.strftime("%Y-%m-%dTHH-MM-00")
+    current_date_hod = version.strftime("%Y-%m-%dT%H-%M-00")
     vector_store = init_vector_store()
     for config in configs:
         update_fetchers(config, current_date_hod)

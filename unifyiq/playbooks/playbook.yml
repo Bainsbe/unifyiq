@@ -65,7 +65,6 @@
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
-        version: daily-runs
 
     - name: Execute MySQL command file
       mysql_db:
