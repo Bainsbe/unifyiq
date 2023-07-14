@@ -19,8 +19,10 @@ def handle_app_mention_events(body, say, logger):
                 question += e.get('text')
     if question:
         question = question.strip()
-    answer = skill_q_and_a(question)
-    say(answer, channel=data['channel'], thread_ts=data['ts'])
+        say(f"Hi <@{data['user']}>! That's a great question. Let me find the answer for you. :hourglass_flowing_sand:",
+            channel=data['channel'], thread_ts=data['ts'])
+        answer = skill_q_and_a(question)
+        say(answer, channel=data['channel'], thread_ts=data['ts'])
 
 
 # Start your app using Socket Mode
