@@ -1,0 +1,152 @@
+- name: Install MySQL
+  hosts: db
+  become: yes
+
+  vars:
+    mysql_user: "{{lookup('ansible.builtin.ini', 'username', section='Database', file='/home/ubuntu/unifyiq.ini')}}"
+    mysql_password: "{{lookup('ansible.builtin.ini', 'password', section='Database', file='/home/ubuntu/unifyiq.ini')}}"
+    mysql_db_name: "{{lookup('ansible.builtin.ini', 'name', section='Database', file='/home/ubuntu/unifyiq.ini')}}"
+    sql_files:
+      - /home/ubuntu/unifyiq/schema/database/Common.sql
+      - /home/ubuntu/unifyiq/schema/database/SlackDB.sql
+
+  tasks:
+    - name: Install MySQL server
+      apt:
+        name: mysql-server
+        state: present
+
+    - name: Install MySQL client
+      pip:
+        name: PyMySQL
+        state: present
+        executable: pip3
+
+    - name: Create a database
+      mysql_db:
+        name: "{{mysql_db_name}}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        state: present
+
+    - name: Create a MySQL user
+      mysql_user:
+        name: "{{mysql_user}}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        password: "{{mysql_password}}"
+        priv: "*.*:ALL"
+        state: present
+
+    - name: Clone repository
+      git:
+        repo: https://github.com/unifyiq/unifyiq.git
+        dest: /home/ubuntu/unifyiq
+
+    - name: Execute MySQL command file
+      mysql_db:
+        login_user: "{{mysql_user}}"
+        login_password: "{{mysql_password}}"
+        login_host: localhost
+        login_port: 3306
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        db: "{{mysql_db_name}}"
+        state: import
+        target: "{{item}}"
+      with_items: "{{ sql_files }}"
+
+
+- name: Install UnifyIQ
+  hosts: unifyiq
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install packages
+      apt:
+        name:
+          - python3-pip
+        state: present
+
+    - name: Clone repository
+      git:
+        repo: https://github.com/unifyiq/unifyiq.git
+        dest: /home/ubuntu/unifyiq
+
+    - name: install dependencies from requirements.txt
+      pip:
+        requirements: requirements.txt
+        chdir: /home/ubuntu/unifyiq/unifyiq
+        executable: pip3
+        extra_args: --default-timeout=1000
+
+    - name: Copy Config file
+      copy:
+        src: /home/ubuntu/unifyiq.ini
+        dest: /home/ubuntu/unifyiq.ini
+
+- name: Install and configure Milvus
+  hosts: milvus
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install dependencies
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Create directory
+      file:
+        path: /home/ubuntu/milvus/
+        state: directory
+
+    - name: Download file
+      get_url:
+        url: https://github.com/milvus-io/milvus/releases/download/v2.2.11/milvus-standalone-docker-compose.yml
+        dest: /home/ubuntu/milvus/docker-compose.yml
+
+    - name: Start Milvus container
+      command: docker-compose up -d
+      args:
+        chdir: /home/ubuntu/milvus/
+
+- name: Install UnifyIQ
+  hosts: unifyiq
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install packages
+      apt:
+        name:
+          - python3-pip
+        state: present
+
+    - name: Clone repository
+      git:
+        repo: https://github.com/unifyiq/unifyiq.git
+        dest: /home/ubuntu/unifyiq
+
+    - name: install dependencies from requirements.txt
+      pip:
+        requirements: requirements.txt
+        chdir: /home/ubuntu/unifyiq/unifyiq
+        executable: pip3
+        extra_args: --default-timeout=1000
+
+    - name: Copy Config file
+      copy:
+        src: /home/ubuntu/unifyiq.ini
+        dest: /home/ubuntu/unifyiq.ini
