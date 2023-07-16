@@ -1,8 +1,10 @@
 import os
+import time
 
 import openai
 
 from retrieval import semantic_search
+from utils import log_util
 from utils.configs import get_open_ai_api_key
 from utils.constants import ID, SOURCE, TEXT, DISTANCE, NO_ANSWER
 
@@ -30,7 +32,9 @@ def generate_answer_from_llm(prompt):
 
 def search_and_generate_prompt(query):
     top_k_results = semantic_search.semantic_search(query)
-
+    logger = log_util.get_logger(__name__)
+    logger.debug("Query: " + query)
+    logger.debug(top_k_results)
     results = {}
     distance = {}
     for result in top_k_results:
@@ -38,11 +42,11 @@ def search_and_generate_prompt(query):
         if url not in results:
             results[url] = []
             distance[url] = result[DISTANCE]
-        if result[DISTANCE] < distance[url]:
+        if result[DISTANCE] > distance[url]:
             distance[url] = result[DISTANCE]
         results[url].append([result[ID], result[TEXT]])
     contexts = []
-    sorted_urls = sorted(distance.items(), key=lambda x: x[1])
+    sorted_urls = sorted(distance.items(), key=lambda x: x[1], reverse=True)
     for url, score in sorted_urls:
         texts = results[url]
         texts.sort(key=lambda x: x[0])
@@ -59,9 +63,9 @@ def search_and_generate_prompt(query):
 
     # build our prompt with the retrieved contexts included
     prompt_start = (
-            "Answer the question based on the Context given below. Each context has a SOURCE."
-            "Return the csv list of SOURCE urls from the context at the end of the answer. Answer in 3 paragraphs"
-            f"And return '{NO_ANSWER}' only if you can't find any answer in the context.\n\n" +
+            "Answer the question only from the Context given below. Each context has a SOURCE."
+            "Return the csv list of SOURCE urls from the context at the end of the answer."
+            f"And return '{NO_ANSWER}' if you can't find any answer in the given Context.\n\n" +
             "Context:\n"
     )
     prompt_end = (

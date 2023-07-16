@@ -10,6 +10,8 @@ def skill_q_and_a(query):
     if query_with_contexts == NO_ANSWER:
         return result
     result = generate_answer_from_llm(query_with_contexts)
+    if NO_ANSWER in result:
+        result = NO_ANSWER
     print("----------------")
     print(result)
     return result
