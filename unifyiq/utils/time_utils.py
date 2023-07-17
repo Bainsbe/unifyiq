@@ -17,11 +17,10 @@ def get_cron_interval(cron_expr):
     return window_size.total_seconds()
 
 
-def get_prev_cron_ts(cron_expr):
+def get_prev_cron_ts(cron_expr, base_time=datetime.datetime.now()):
     """
     Returns the timestamp in seconds for the previous execution based on cron_expression.
     """
-    base_time = datetime.datetime.now()
     cron = croniter(cron_expr, base_time)
     previous_execution = cron.get_prev(datetime.datetime)
     return int(previous_execution.timestamp())
