@@ -21,7 +21,7 @@ destinations.
 2. Create a new adapter that extends BaseAdapter
 3. Create the necessary metadata tables in the database and add to (schemas)[/schema/database/]
 4. Implement all abstract methods to extract metadata and data from the source
-    1. load_metadata
+    1. load_metadata_from_db
         1. Extract the metadata from database to determine the changes
         2. e.g. Slack Channel Information, Slack Channel membership etc.
     2. fetch_and_save_raw_data
@@ -32,7 +32,7 @@ destinations.
         4. Use `BaseAdapter.validate_and_write_json` to write to the appropriate paths. This will fail if the required
            fields are not set
         5. e.g. Slack Channel messages
-    3. save_metadata
+    3. save_metadata_to_db
         1. Save the metadata to the database
         2. e.g. Slack Channel Information, Slack Channel membership etc.
 5. Add the api layer to the adapter if we need to expose the metadata in UI
