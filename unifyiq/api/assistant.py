@@ -13,7 +13,8 @@ def skill_q_and_a(query):
     if NO_ANSWER in result:
         result = NO_ANSWER
     else:
-        result = result.replace("SOURCES", "\n\nSOURCES ")
+        result = result.replace("SOURCE", "\n\nSOURCE ")
+        result = result.replace("Source", "\n\nSource ")
     print("----------------")
     print(result)
     return result
