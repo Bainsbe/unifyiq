@@ -12,6 +12,8 @@ def skill_q_and_a(query):
     result = generate_answer_from_llm(query_with_contexts)
     if NO_ANSWER in result:
         result = NO_ANSWER
+    else:
+        result = result.replace("SOURCES", "\n\nSOURCES ")
     print("----------------")
     print(result)
     return result
