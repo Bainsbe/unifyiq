@@ -202,8 +202,10 @@ class SlackAdapter(BaseAdapter):
                 for e in b.get('elements', []):
                     for ee in e.get('elements', []):
                         element_type = ee.get('type', 'unknown')
-                        if 'text' in ee and (element_type == 'text' or element_type == 'link'):
+                        if 'text' in ee and element_type == 'text':
                             text += ee.get('text')
+                        elif 'url' in ee and element_type == 'link':
+                            text += ee.get('url')
             if text:
                 self.set_required_values_in_json(json_data=data, id_str=id_str, parent_id=parent_id, text=text,
                                                  url=self.get_slack_url(id_str), user=data['user'],
