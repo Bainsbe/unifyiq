@@ -1,10 +1,10 @@
 import json
 import pickle
 
-from utils.constants import CONVERSATION_CONNECTORS, ID, SOURCE, TEXT, NORMALIZED_TEXT, EMBEDDINGS
 from core.nlp.sentence_transformer_embeddings import SentenceTransformerEmbeddings
+from utils.constants import CONVERSATION_CONNECTORS, ID, SOURCE, TEXT, NORMALIZED_TEXT, EMBEDDINGS
 from utils.file_utils import get_fetcher_output_path_from_config, get_jsonl_files, get_core_output_path_from_config
-from utils.text_utils import add_space_if_not_empty, normalize
+from utils.text_utils import add_space_if_not_empty, normalize, split_document_to_sentences
 
 THREE_HOURS_IN_SECONDS = 3 * 60 * 60
 
@@ -67,7 +67,22 @@ def build_snippets(conversations, max_snippet_word_count, prev_snippet_overlap_w
 
 
 def process_documents(input_files, embeddings_generator, output_path):
-    pass
+    grouped_text = {}
+    for file in input_files:
+        with open(file, 'r') as f:
+            for line in f:
+                json_data = json.loads(line)
+                if json_data['id'] not in grouped_text:
+                    grouped_text[json_data['id']] = []
+                group_conversations = grouped_text[json_data['id']]
+                sentences = split_document_to_sentences(json_data['text'])
+                for sentence in sentences:
+                    norm_curr_conv = normalize(sentence)
+                    norm_curr_conv_wc = len(norm_curr_conv.split())
+                    group_conversations.append((json_data['created_at'], json_data['id'], json_data['url'],
+                                                sentence, norm_curr_conv, norm_curr_conv_wc))
+        f.close()
+        generate_embeddings(embeddings_generator, grouped_text, output_path)
 
 
 def process_short_conversations(input_files, embeddings_generator, output_path):
@@ -84,6 +99,10 @@ def process_short_conversations(input_files, embeddings_generator, output_path):
                 group_conversations.append((json_data['created_at'], json_data['id'], json_data['url'],
                                             json_data['text'], norm_curr_conv, norm_curr_conv_wc))
         f.close()
+    generate_embeddings(embeddings_generator, grouped_text, output_path)
+
+
+def generate_embeddings(embeddings_generator, grouped_text, output_path):
     snippets = {ID: [], SOURCE: [], TEXT: [], NORMALIZED_TEXT: [], EMBEDDINGS: []}
     with open(f'{output_path}/embeddings.pkl', "wb") as fOut:
         for group, conversations in grouped_text.items():

@@ -1,5 +1,4 @@
 import os
-import time
 
 import openai
 
@@ -53,7 +52,7 @@ def search_and_generate_prompt(query):
         context = ""
         for txt in texts:
             context += txt[1]
-        context += "SOURCE: " + url + "\n"
+        context += "\nSOURCE: " + url + "\n"
         contexts.append(context)
     print("---------------")
     print(contexts)
@@ -63,13 +62,13 @@ def search_and_generate_prompt(query):
 
     # build our prompt with the retrieved contexts included
     prompt_start = (
-            "Answer the question only from the Context given below. Each context has a SOURCE."
-            "Return the csv list of SOURCE urls from the context at the end of the answer."
-            f"And return '{NO_ANSWER}' if you can't find any answer in the given Context.\n\n" +
+            f"Answer the question \"\"\"{query}\"\"\" only from the Context given below. Each context has a SOURCE."
+            " Return only the SOURCES that were used to answer at the end of the answer."
+            f" And return '{NO_ANSWER}' if you can't find answer to the question from the given Context.\n\n" +
             "Context:\n"
     )
     prompt_end = (
-        f"\n\nQuestion: {query}\nAnswer:"
+        f"\nAnswer:"
     )
     context = "\n\n---\n\n".join(contexts)
     if len(context) > limit:
