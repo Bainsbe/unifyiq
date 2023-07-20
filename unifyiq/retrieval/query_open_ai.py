@@ -63,7 +63,7 @@ def search_and_generate_prompt(query):
     # build our prompt with the retrieved contexts included
     prompt_start = (
             f"Answer the question \"\"\"{query}\"\"\" only from the Context given below. Each context has a SOURCE."
-            " Return only the SOURCES that were used to answer at the end of the answer."
+            " Return the SOURCES that were used to answer at the end of the answer."
             f" And return '{NO_ANSWER}' if you can't find answer to the question from the given Context.\n\n" +
             "Context:\n"
     )
