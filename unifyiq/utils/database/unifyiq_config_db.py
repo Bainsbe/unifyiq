@@ -19,14 +19,18 @@ fetchers_configs = Table('unifyiq_configs', metadata,
 
 engine = create_engine(configs.get_database_url())
 Session = sessionmaker(bind=engine)
-session = Session()
 
 
 def get_fetcher_configs():
-    return session.query(fetchers_configs).where(fetchers_configs.c.is_enabled == True).all()
+    session = Session()
+    results = session.query(fetchers_configs).where(fetchers_configs.c.is_enabled == True).all()
+    session.close()
+    return results
 
 
 def update_last_fetched_ts(config, last_fetched_ts):
+    session = Session()
     stmt = update(fetchers_configs).where(fetchers_configs.c.id == config.id).values(last_fetched_ts=last_fetched_ts)
     session.execute(stmt)
     session.commit()
+    session.close()

@@ -27,7 +27,6 @@ fetchers_slack_channel_info = Table('fetchers_slack_channel_info', metadata,
 
 engine = create_engine(configs.get_database_url())
 Session = sessionmaker(bind=engine)
-session = Session()
 
 
 def get_current_channel_info():
@@ -36,6 +35,7 @@ def get_current_channel_info():
     :return:
     """
     channel_info = {}
+    session = Session()
     curr_channel_info = session.query(fetchers_slack_channel_info).all()
     for c in curr_channel_info:
         channel_info[c.channel_id] = {"channel_id": c.channel_id,
@@ -48,6 +48,7 @@ def get_current_channel_info():
                                       "is_group": c.is_group,
                                       "is_im": c.is_im,
                                       "is_mpim": c.is_mpim}
+    session.close()
     return channel_info
 
 
@@ -58,6 +59,7 @@ def insert_channel_info_to_db(data):
     :return:
     """
     count = 0
+    session = Session()
     insert_statement = insert(fetchers_slack_channel_info).values(channel_id=":channel_id",
                                                                   name=":name",
                                                                   topic=":topic",
@@ -83,6 +85,7 @@ def insert_channel_info_to_db(data):
         if (count % 1000) == 0:
             session.commit()
     session.commit()
+    session.close()
 
 
 def update_channel_info_to_db(data):
@@ -92,6 +95,7 @@ def update_channel_info_to_db(data):
     :return:
     """
     count = 0
+    session = Session()
     update_statement = (
         update(fetchers_slack_channel_info)
         .where(text("channel_id = :channel_id"))
@@ -119,6 +123,7 @@ def update_channel_info_to_db(data):
         if (count % 1000) == 0:
             session.commit()
     session.commit()
+    session.close()
 
 
 def get_current_channel_membership():
@@ -127,10 +132,12 @@ def get_current_channel_membership():
     :return: Dict with (channel_id, member_id) -> False as key -> value
     """
     membership = {}
+    session = Session()
     curr_memberships = session.query(fetchers_slack_channel_members).where(
         fetchers_slack_channel_members.c.is_active == True).all()
     for m in curr_memberships:
         membership[(m.channel_id, m.member_id)] = False
+    session.close()
     return membership
 
 
@@ -141,6 +148,7 @@ def insert_channel_membership(data):
     :return:
     """
     count = 0
+    session = Session()
     insert_statement = insert(fetchers_slack_channel_members).values(channel_id=":channel_id",
                                                                      member_id="'member_id'",
                                                                      is_active=True)
@@ -150,6 +158,7 @@ def insert_channel_membership(data):
         if (count % 1000) == 0:
             session.commit()
     session.commit()
+    session.close()
 
 
 def delete_channel_membership(data):
@@ -159,6 +168,7 @@ def delete_channel_membership(data):
     :return:
     """
     count = 0
+    session = Session()
     update_statement = (
         update(fetchers_slack_channel_members)
         .where(and_(text("channel_id >= :channel_id"), text("member_id <= :member_id")))
@@ -170,3 +180,4 @@ def delete_channel_membership(data):
         if (count % 1000) == 0:
             session.commit()
     session.commit()
+    session.close()
