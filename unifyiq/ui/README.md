@@ -19,6 +19,7 @@ The UI was created by using ReactJS, Tailwind, Charka, React router dom.
 
 ## Install & Run project
 
+- cd unifyiq/ui
 - You will need to run **npm install** to install all your dependencies 
 - Run this application from this location using **npm start**
 - After installation, there are ~76 vulnerabilities...Dont worry! Its expected. npm audit is designed for Node apps so
