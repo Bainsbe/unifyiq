@@ -10,3 +10,11 @@ slack_bolt
 slack_sdk
 croniter
 nltk
+langchain
+requests
+atlassian-python-api
+beautifulsoup4
+pytesseract
+Pillow
+reportlab
+svglib

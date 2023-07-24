@@ -25,7 +25,7 @@
     mysql_db_name: "{{lookup('ansible.builtin.ini', 'name', section='Database', file='/home/ubuntu/unifyiq.ini')}}"
     sql_files:
       - /home/ubuntu/unifyiq/schema/database/Common.sql
-      - /home/ubuntu/unifyiq/schema/database/SlackDB.sql
+      - /home/ubuntu/unifyiq/schema/database/ConnectorsMetaData.sql
 
   tasks:
     - name: Install packages

@@ -8,6 +8,12 @@ destinations.
 ### Sources
 
 1. Slack
+    1. Follow the instructions [here](/retrieval/slackbot/README.md) to setup the SlackBot and get the required
+       credentials
+2. Confluence Wiki
+    1. Visit https://id.atlassian.com/manage-profile/security/api-tokens
+    2. Create a new API token
+    3. Use the email address, site name and the API token to configure the Confluence adapter in unifyiq.ini
 
 ### Destinations
 
@@ -46,4 +52,6 @@ destinations.
  ~~~~sql
  INSERT INTO unifyiq_configs(name, connector_type, url_prefix, cron_expr, start_ts, last_fetched_ts, is_enabled)
         VALUES('unifyiq_slack', 'SLACK','https://[WORKSPACE].slack.com/', '0 2 * * *', 1672560000, 0, true);
+ INSERT INTO unifyiq_configs(name, connector_type, url_prefix, cron_expr, start_ts, last_fetched_ts, is_enabled)
+        VALUES('unifyiq_confluence', 'CONFLUENCE','https://[WORKSPACE].atlassian.net/', '0 2 * * *', 1672560000, 0, true);   
  ~~~~

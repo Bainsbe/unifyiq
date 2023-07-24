@@ -102,3 +102,18 @@ def get_slack_bot_token():
 def get_slack_client_signature():
     """Returns the slack client signature from config file `unifyiq.ini`."""
     return config.get('Slackbot', 'client_signature')
+
+
+def get_confluence_email_address():
+    """Returns the confluence email address from config file `unifyiq.ini`."""
+    return config.get('Confluence', 'email_address')
+
+
+def get_confluence_api_key():
+    """Returns the confluence api key from config file `unifyiq.ini`."""
+    return config.get('Confluence', 'api_key')
+
+
+def get_confluence_site():
+    """Returns the confluence site(organization) name from config file `unifyiq.ini`."""
+    return config.get('Confluence', 'site')

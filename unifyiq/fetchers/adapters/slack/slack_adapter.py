@@ -234,7 +234,7 @@ class SlackAdapter(BaseAdapter):
 
     def update_channel_info(self):
         if len(self.curr_channel_info) > 0:
-            update_channel_info_to_db(self.curr_channel_info)
+            update_channel_info_to_db(self.curr_channel_info.values())
         if len(self.new_channel_info) > 0:
             insert_channel_info_to_db(self.new_channel_info)
 
