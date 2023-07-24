@@ -8,7 +8,7 @@ destinations.
 ### Sources
 
 1. Slack
-    1. Follow the instructions [here](/uniyiq/retrieval/slackbot/README.md) to setup the SlackBot and get the required
+    1. Follow the instructions [here](/unifyiq/retrieval/slackbot/README.md) to setup the SlackBot and get the required
        credentials
 2. Confluence Wiki
     1. Visit https://id.atlassian.com/manage-profile/security/api-tokens
