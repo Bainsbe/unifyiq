@@ -8,6 +8,7 @@ from core.vectordb.milvus import Milvus, MILVUS_COLLECTION_NAME
 from utils.configs import delete_index_always
 from utils.database import unifyiq_config_db
 from utils.file_utils import get_core_output_path_from_config
+from utils.storage import storage_util
 
 
 def init_vector_store():
@@ -20,8 +21,9 @@ def init_vector_store():
 
 
 def update_index(vectors_store, source_config, current_date_hod):
+    output_storage = storage_util.get_storage_instance()
     print(f"Generating embeddings for {source_config.name} - {source_config.connector_type}")
-    update_embeddings(source_config, current_date_hod)
+    update_embeddings(source_config, output_storage, current_date_hod)
     print(f"Indexing to Milvus - {get_core_output_path_from_config(source_config, current_date_hod)}/embeddings.pkl")
     vectors_store.insert(f"{get_core_output_path_from_config(source_config, current_date_hod)}/embeddings.pkl")
     print(f"Index Updated")

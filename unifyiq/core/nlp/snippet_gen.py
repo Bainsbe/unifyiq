@@ -66,39 +66,37 @@ def build_snippets(conversations, max_snippet_word_count, prev_snippet_overlap_w
     return snippets
 
 
-def process_documents(input_files, embeddings_generator, output_path):
+def process_documents(storage, input_files, embeddings_generator, output_path):
     grouped_text = {}
     for file in input_files:
-        with open(file, 'r') as f:
-            for line in f:
-                json_data = json.loads(line)
-                if json_data['id'] not in grouped_text:
-                    grouped_text[json_data['id']] = []
-                group_conversations = grouped_text[json_data['id']]
-                sentences = split_document_to_sentences(json_data['text'])
-                for sentence in sentences:
-                    norm_curr_conv = normalize(sentence)
-                    norm_curr_conv_wc = len(norm_curr_conv.split())
-                    group_conversations.append((json_data['created_at'], json_data['id'], json_data['url'],
-                                                sentence, norm_curr_conv, norm_curr_conv_wc))
-        f.close()
+        lines = storage.read_file(file)
+        for line in lines:
+            json_data = json.loads(line)
+            if json_data['id'] not in grouped_text:
+                grouped_text[json_data['id']] = []
+            group_conversations = grouped_text[json_data['id']]
+            sentences = split_document_to_sentences(json_data['text'])
+            for sentence in sentences:
+                norm_curr_conv = normalize(sentence)
+                norm_curr_conv_wc = len(norm_curr_conv.split())
+                group_conversations.append((json_data['created_at'], json_data['id'], json_data['url'],
+                                            sentence, norm_curr_conv, norm_curr_conv_wc))
         generate_embeddings(embeddings_generator, grouped_text, output_path)
 
 
-def process_short_conversations(input_files, embeddings_generator, output_path):
+def process_short_conversations(storage, input_files, embeddings_generator, output_path):
     grouped_text = {}
     for file in input_files:
-        with open(file, 'r') as f:
-            for line in f:
-                json_data = json.loads(line)
-                if json_data['group'] not in grouped_text:
-                    grouped_text[json_data['group']] = []
-                group_conversations = grouped_text[json_data['group']]
-                norm_curr_conv = normalize(json_data['text'])
-                norm_curr_conv_wc = len(norm_curr_conv.split())
-                group_conversations.append((json_data['created_at'], json_data['id'], json_data['url'],
-                                            json_data['text'], norm_curr_conv, norm_curr_conv_wc))
-        f.close()
+        lines = storage.read_file(file)
+        for line in lines:
+            json_data = json.loads(line)
+            if json_data['group'] not in grouped_text:
+                grouped_text[json_data['group']] = []
+            group_conversations = grouped_text[json_data['group']]
+            norm_curr_conv = normalize(json_data['text'])
+            norm_curr_conv_wc = len(norm_curr_conv.split())
+            group_conversations.append((json_data['created_at'], json_data['id'], json_data['url'],
+                                        json_data['text'], norm_curr_conv, norm_curr_conv_wc))
     generate_embeddings(embeddings_generator, grouped_text, output_path)
 
 
@@ -115,7 +113,7 @@ def generate_embeddings(embeddings_generator, grouped_text, output_path):
     fOut.close()
 
 
-def update_embeddings(source_config, version):
+def update_embeddings(source_config, storage, version):
     """
     Update embeddings in vector store
     :param source_config: Config object
@@ -128,9 +126,9 @@ def update_embeddings(source_config, version):
     output_path = get_core_output_path_from_config(source_config, version)
     if source_config.connector_type in CONVERSATION_CONNECTORS:
         # Short conversations. Cluster to form snippets
-        process_short_conversations(input_files, embeddings_gen, output_path)
+        process_short_conversations(storage, input_files, embeddings_gen, output_path)
         pass
     else:
         # Long conversations. Chunk to form snippets
-        process_documents(input_files, embeddings_gen, output_path)
+        process_documents(storage, input_files, embeddings_gen, output_path)
         pass

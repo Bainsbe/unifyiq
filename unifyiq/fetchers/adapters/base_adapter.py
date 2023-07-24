@@ -6,6 +6,7 @@ from jsonschema import validate, ValidationError
 from utils.database.unifyiq_config_db import update_last_fetched_ts
 from utils.file_utils import get_fetcher_output_path_from_config
 from utils.log_util import get_logger
+from utils.storage.storage_util import get_storage_instance
 from utils.time_utils import get_prev_cron_ts
 
 ID = "id"
@@ -48,6 +49,7 @@ def get_end_ts_from_cron_expr(last_fetched_ts, cron_expr):
 class BaseAdapter(metaclass=ABCMeta):
     @abstractmethod
     def __init__(self, source_config, version, logger=get_logger(__name__)):
+        self.storage = get_storage_instance()
         self.source_config = source_config
         self.version = version
         self.logger = logger
@@ -57,7 +59,6 @@ class BaseAdapter(metaclass=ABCMeta):
             self.start_ts = source_config.start_ts
         self.end_ts = get_end_ts_from_cron_expr(source_config.last_fetched_ts, source_config.cron_expr)
         self.output_path = get_fetcher_output_path_from_config(source_config, version)
-        self.output_files = {}
 
     @abstractmethod
     def fetch_and_save_raw_data(self):
@@ -81,22 +82,16 @@ class BaseAdapter(metaclass=ABCMeta):
         self.load_metadata_from_db()
         self.fetch_and_save_raw_data()
         self.save_metadata_to_db()
-        self.close_files()
+        self.storage.close_all_write_files()
         update_last_fetched_ts(self.source_config, self.end_ts)
 
     def validate_and_write_json(self, json_data, file_name):
-        if file_name not in self.output_files:
-            self.output_files[file_name] = open(f"{self.output_path}/{file_name}.jsonl", 'w')
         try:
             validate(json_data, schema)
         except ValidationError as e:
             raise f"Validation error: {e}"
         else:
-            self.output_files[file_name].write(json.dumps(json_data) + "\n")
-
-    def close_files(self):
-        for file in self.output_files.values():
-            file.close()
+            self.storage.write_line(f"{self.output_path}/{file_name}.jsonl", json.dumps(json_data))
 
     def set_required_values_in_json(self, json_data, id_str, parent_id, text, url, user, group, created_at,
                                     last_updated_at):

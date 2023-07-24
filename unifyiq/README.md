@@ -1,6 +1,7 @@
 # UnifyIQ - Knowledge Assistant
 
 ## Stand alone setup
+
 ### Pre-requisite
 
 - Python 3.10+

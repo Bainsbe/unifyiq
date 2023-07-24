@@ -32,10 +32,14 @@
 - Copy the config file to the home directory
     - `cp ~/unifyiq/conf/unifyiq.ini ~/`
     - Update the paths in UnifyIQ section
-    - Update the values in the config file with required mysql, slackbot and openai credentials
+    - Update the values in the config file with required mysql and openai credentials
+    - Update the `Storage.storage_encryption_key` generated using the following command
+        - `openssl rand -base64 16`
+        - **Note:** This key is used to encrypt the data stored in the database and storage. If you lose this key, you
+          will not be able to retrieve the data. You will have to re-ingest the whole data from all the fetchers.
     - Update the milvus host with the private IP of the milvus instance if its a different machine
 - Run the playbook
-    - `cd unifyiq/playbooks`    
+    - `cd unifyiq/playbooks`
     - Playbook uses mysql credentials from the config file, so above step is required
     - Modify the `inventory` with correct IP address (Private IP) and key file path
     - `ansible-playbook playbook.yml`

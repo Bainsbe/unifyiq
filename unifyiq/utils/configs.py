@@ -48,6 +48,7 @@ def get_storage_type():
     storage_type = config.get('UnifyIQ', 'storage_type')
     if storage_type not in SUPPORTED_STORAGE_TYPES:
         raise ValueError(f"Unsupported storage type {storage_type}")
+    return storage_type
 
 
 def get_database_url():
@@ -117,3 +118,13 @@ def get_confluence_api_key():
 def get_confluence_site():
     """Returns the confluence site(organization) name from config file `unifyiq.ini`."""
     return config.get('Confluence', 'site')
+
+
+def get_security_key():
+    """Returns the security key from config file `unifyiq.ini`."""
+    return config.get('Security', 'security_key')
+
+
+def get_storage_encryption_key():
+    """Returns the encryption key from config file `unifyiq.ini`."""
+    return config.get('Security', 'storage_encryption_key')
