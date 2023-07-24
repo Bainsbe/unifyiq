@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+
 from sqlalchemy import Table, Column, Integer, String, MetaData, Boolean, update
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -18,19 +20,42 @@ fetchers_configs = Table('unifyiq_configs', metadata,
                          Column('is_enabled', Boolean, nullable=False))
 
 engine = create_engine(configs.get_database_url())
-Session = sessionmaker(bind=engine)
+
+
+@contextmanager
+def session_scope():
+    session = sessionmaker(bind=engine)()
+    try:
+        yield session
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 
 def get_fetcher_configs():
-    session = Session()
-    results = session.query(fetchers_configs).where(fetchers_configs.c.is_enabled == True).all()
-    session.close()
-    return results
+    with session_scope() as session:
+        return session.query(fetchers_configs).where(fetchers_configs.c.is_enabled == True).all()
 
 
 def update_last_fetched_ts(config, last_fetched_ts):
-    session = Session()
-    stmt = update(fetchers_configs).where(fetchers_configs.c.id == config.id).values(last_fetched_ts=last_fetched_ts)
-    session.execute(stmt)
-    session.commit()
-    session.close()
+    with session_scope() as session:
+        stmt = update(fetchers_configs).where(fetchers_configs.c.id == config.id).values(
+            last_fetched_ts=last_fetched_ts)
+        session.execute(stmt)
+        session.commit()
+
+
+def add_fetcher_config(name, connector_type, url_prefix, cron_expr, start_ts, last_fetched_ts, is_enabled):
+    with session_scope() as session:
+        try:
+            new = fetchers_configs.insert().values(name=name, connector_type=connector_type, url_prefix=url_prefix,
+                                                   cron_expr=cron_expr, start_ts=start_ts,
+                                                   last_fetched_ts=last_fetched_ts, is_enabled=is_enabled)
+            session.execute(new)
+            session.commit()
+            print('New fetcher configuration added successfully')
+        except IndentationError as e:
+            session.rollback()
+            raise Exception(f'Error adding new fetcher configuration: {str(e)}')

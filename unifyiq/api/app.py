@@ -4,6 +4,7 @@
 from flask import Flask, request, jsonify
 
 from api.assistant import skill_q_and_a
+from api.v1.connector_routes import connector_routes
 
 # Flask app setup
 app = Flask(__name__)
@@ -23,5 +24,7 @@ def get_answer():
         return jsonify(response_obj)
 
 
+app.register_blueprint(connector_routes, url_prefix='/api/v1/connectors')
+
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8080)
+    app.run(host="0.0.0.0", port=8080)
