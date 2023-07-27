@@ -25,7 +25,7 @@
     - Run `docker-compose down` to bring it down
 
  - UI
-    - Please follow instuctions in [here] (/unifyiq/tree/main/unifyiq/ui) to setup Admin UI
+    - Please follow instuctions in [here](/unifyiq/tree/main/unifyiq/ui/README.md) to setup Admin UI
 
 ### Alternative Testing Setup - TODO FIX THIS
 
