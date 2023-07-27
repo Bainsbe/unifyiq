@@ -9,8 +9,6 @@ We hold a strong conviction in the power of **open-source solutions** as the fou
 
 ### UnifyIQ Mission.
 ![UnifyIQ Mission](resources/images/unify-iq-mission.jpg)
-### UnifyIQ Vision.
-![UnifyIQ Vision](resources/images/unify-iq-vision.jpg)
 
 ### Getting Started
 Please follow the instructions [here](/unifyiq/README.md)
