@@ -24,6 +24,9 @@
       ```
     - Run `docker-compose down` to bring it down
 
+ - UI
+    - Please follow instuctions in [here] (/unifyiq/tree/main/unifyiq/ui) to setup Admin UI
+
 ### Alternative Testing Setup - TODO FIX THIS
 
 - If you don't want to setup Slackbot, you can use the data in [resources/](/data/fetchers/slack) folder
