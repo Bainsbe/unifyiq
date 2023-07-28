@@ -13,7 +13,7 @@ import {
   } from '@chakra-ui/react'
 
 const ContentTable = () => {
-    const headers = ['name', 'connector type', 'src path', 'last fetched', 'is enabled?'];
+    const headers = ['name', 'connector type', 'url prefix', 'last fetched', 'is enabled?'];
     const { connectors, loading } = useSelector(state => state.connectors)
     const dispatch = useDispatch();
     useEffect(() => {
@@ -43,11 +43,7 @@ const ContentTable = () => {
                                     <Td>{connector.connector_type}</Td>
                                     <Td>{connector.url_prefix}</Td>
                                     <Td>{connector.last_fetched_ts}</Td>
-                                    <Td>
-                                        <Switch
-                                            // isChecked={test.is_enabled}
-                                        />
-                                    </Td>
+                                    <Td>{connector.is_enabled}</Td>
                                 </Tr>)
                         }
                     </Tbody>

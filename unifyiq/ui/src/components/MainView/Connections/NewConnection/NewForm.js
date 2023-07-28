@@ -20,8 +20,7 @@ import {useDispatch} from 'react-redux'
 
 
 function isValidUrl(url) {
-    const urlRegex = /^(?:(?:https?|ftp):\/\/)?(?:www\.)?[a-z0-9\-]+\.[a-z]{2,}(?:\/.*)?$/i;
-        return urlRegex.test(url);
+      return true;
   }
 
 const NewForm = () => {
