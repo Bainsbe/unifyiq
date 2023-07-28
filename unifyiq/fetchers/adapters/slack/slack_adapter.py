@@ -9,7 +9,7 @@ from fetchers.database.fetchers_slack_db import insert_channel_membership, \
     get_current_channel_membership, delete_channel_membership, get_current_channel_info, insert_channel_info_to_db, \
     update_channel_info_to_db
 from utils import constants
-from utils.configs import get_slack_bot_token
+from utils.database.unifyiq_config_db import get_slack_bot_token
 from utils.constants import MAX_ATTEMPTS_FOR_SLACK_API_CALL
 from utils.database import unifyiq_config_db
 from utils.file_utils import skip_index_file_name
@@ -23,7 +23,7 @@ class SlackAdapter(BaseAdapter):
 
     def __init__(self, source_config, version):
         super().__init__(source_config, version, get_logger(__name__))
-        self.client = WebClient(token=get_slack_bot_token())
+        self.client = WebClient(token=get_slack_bot_token(source_config.config_json))
         self.bot_user_id = self.client.auth_test()['user_id']
         self.attempts = {}
         self.curr_channel_info = {}

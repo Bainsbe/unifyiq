@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `unifyiq`.`unifyiq_configs` (
   `url_prefix` VARCHAR(255) NOT NULL,
   `cron_expr` VARCHAR(20) NOT NULL,
   `start_ts` INTEGER NOT NULL,
+  `config_json` VARCHAR(2048) NOT NULL,
   `last_fetched_ts` INTEGER NOT NULL,
   `is_enabled` BOOLEAN NOT NULL,
   PRIMARY KEY (`id`), UNIQUE KEY (`name`));

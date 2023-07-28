@@ -4,7 +4,7 @@ import {
     Heading,
     Select,
     Stack,
-    FormControl, 
+    FormControl,
     FormLabel,
     Input,
     CardFooter,
@@ -12,8 +12,9 @@ import {
     Text
 } from '@chakra-ui/react'
 import * as connectorAction from '../../../../store/connectorReducer'
+import {SLACK, CONFLUENCE, GOOGLEDOC} from "../../../../constants";
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 
@@ -26,7 +27,7 @@ function isValidUrl(url) {
 const NewForm = () => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
-    const [source, setSource] = useState('Slack'); 
+    const [source, setSource] = useState(SLACK);
     const [url, setUrl] = useState('');
     const [date, setDate] = useState('');
     const [nameErr, setNameErr] = useState('');
@@ -34,24 +35,38 @@ const NewForm = () => {
     const [dateErr, setDateErr] = useState('');
     const [err, setErr] = useState('');
     const dispatch = useDispatch();
+    const [config, setConfig] = useState();
+    const [configSettings, setConfigSettings] = useState({});
+    const [configValues, setConfigValues] = useState([]);
+    const [configErrors, setConfigErrors] = useState({});
 
-    const options = [ 
-        {
-            id: 0, 
-            source: 'Slack', 
-            logo: 'test'
-        }, 
-        {
-            id: 1, 
-            source: 'GoogleDoc', 
-            logo: 'test'
-        }, 
-        {
-            id: 2,
-            source: 'ConfluenceWiki',
-            logo: 'test'
-        }
-    ]
+    useEffect(() => {
+        //potential bug is if the name of the source != the name in options
+        //ensure constants in constants.js are the same as constants.py
+        setConfig(configSettings[source]);
+    }, [source]);
+
+    useEffect(() => {
+        fetch('/fetcher_config_values')
+            .then(response => response.json())
+            .then(data => {
+                setConfigSettings(data)
+                setConfig(data[source])
+            })
+            .catch(error => console.error('Error:', error));
+    }, [])
+
+    const handleConfigChange = (name) => (e) => {
+        const {value} = e.target;
+        setConfigValues({
+            ...configValues,
+            [name]: value
+        })
+    }
+    const handleSelectChange = (e) => {
+        setSource(e.target.value);
+        setConfig(configSettings[e.target.value]);
+    }
 
     const handleSubmit = async () => {
         setNameErr('');
@@ -67,6 +82,22 @@ const NewForm = () => {
         if (date.trim() === '') {
             setDateErr('Date cannot be empty.');
         }
+
+        let errorObject = {};
+
+        // This will check all the config fields to ensure none of them are empty.
+        Object.entries(configValues).forEach(([key, value]) => {
+            if (!value || value.trim() === '') {
+                errorObject[key] = true;
+            }
+        });
+
+        setConfigErrors(errorObject);
+
+        // Check if we have any error, if so, return and don't submit the form.
+        if (Object.keys(errorObject).length > 0) return;
+
+
         if (name.trim() !== '' && name.length <= 45 && url.trim() !== '' && isValidUrl(url) && date.trim() !== '') {
             const info = {
                 name,
@@ -74,7 +105,8 @@ const NewForm = () => {
                 url_prefix: url,
                 start_ts: new Date(date).getTime() / 1000,
                 is_enabled: true,
-                last_fetched_ts: 0
+                last_fetched_ts: 0,
+                config_json: configValues
             }
             const data = await dispatch(connectorAction.addConnectors(info));
             if (data.payload.status === 'success') {
@@ -116,15 +148,35 @@ const NewForm = () => {
                                  </FormLabel>
                                 <Select
                                     value={source}
-                                    onChange={(e)=> setSource(e.target.value)}
+                                    onChange={handleSelectChange}
+                                    isRequired={true}
                                 >
                                     {
-                                        options.map(option =>
-                                            <option key={option.id}>{option.source}</option>
-                                        )
+                                        (configSettings && Object.entries(configSettings).map(([name_key, configs], index) =>
+                                            <option key={index} value={name_key}>
+                                                {configs.display_name}
+                                            </option>
+                                        ))
                                     }
                                 </Select>
                             </FormControl>
+                            {
+                                (config && config.configs.map((item, index) => (
+                                    <FormControl key={index}>
+                                        <FormLabel>{item.display_name}</FormLabel>
+                                        <Input
+                                            placeholder={`Enter ${item.display_name}`}
+                                            value={configValues[item.name]}
+                                            isRequired={true}
+                                            isInvalid={configErrors[item.name]}
+                                            onChange={handleConfigChange(item.name)}
+                                        />
+                                        {
+                                            configErrors[item.name] && <Text color='red' className='mt-2'>This field is required</Text>
+                                        }
+                                    </FormControl>
+                                )))
+                            }
                             <FormControl>
                                 <FormLabel>URL prefix</FormLabel>
                                 <Input

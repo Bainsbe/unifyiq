@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-
+import json
 from utils.database.unifyiq_config_db import get_fetcher_configs, add_fetcher_config
 
 connector_routes = Blueprint('connector_routes', __name__)
@@ -33,8 +33,11 @@ def add_new():
         start_ts = data['start_ts']
         last_fetched_ts = data['last_fetched_ts']
         is_enabled = data['is_enabled']
-        add_fetcher_config(name, connector_type, url_prefix, cron_expr, start_ts, last_fetched_ts, is_enabled)
+        config_json = json.dumps(data['config_json'])
+        print(config_json)
+        add_fetcher_config(name, connector_type, url_prefix, cron_expr, start_ts, last_fetched_ts, is_enabled, config_json)
         return {'status': 'success'}, 201
     except Exception as e:
         print(str(e))
+        print('hello noooooo')
         return {'error': 'Please try again'}, 400

@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 
 from api.assistant import skill_q_and_a
 from api.v1.connector_routes import connector_routes
+from fetchers.adapters.fetcher_configs import FETCHER_CONFIG_VALUES
 
 # Flask app setup
 app = Flask(__name__)
@@ -22,6 +23,11 @@ def get_answer():
         print('Exception')
         response_obj = {'status': 'failed', 'reason': str(e)}
         return jsonify(response_obj)
+
+
+@app.route('/fetcher_config_values')
+def fetcher_config_values():
+    return jsonify(FETCHER_CONFIG_VALUES)
 
 
 app.register_blueprint(connector_routes, url_prefix='/api/v1/connectors')

@@ -7,13 +7,14 @@ destinations.
 
 ### Sources
 
-1. Slack
-    1. Follow the instructions [here](/unifyiq/retrieval/slackbot/README.md) to setup the SlackBot and get the required
-       credentials
-2. Confluence Wiki
-    1. Visit https://id.atlassian.com/manage-profile/security/api-tokens
-    2. Create a new API token
-    3. Use the email address, site name and the API token to configure the Confluence adapter in unifyiq.ini
+#### Slack
+1. Follow the instructions [here](/unifyiq/retrieval/slackbot/README.md) to setup the SlackBot and get the required
+   credentials
+
+#### Confluence Wiki
+1. Visit https://id.atlassian.com/manage-profile/security/api-tokens
+2. Create a new API token
+3. Use the email address, site name and the API token to configure the Confluence adapter in unifyiq.ini
 
 ### Destinations
 

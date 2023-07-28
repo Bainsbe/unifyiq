@@ -18,19 +18,22 @@ export const listConnectors = createAsyncThunk('connector/listConnectors', async
 })
 
 export const addConnectors = createAsyncThunk('connector/addConnectors', async (connectorInfo, {rejectWithValue}) => {
-    const { name, url_prefix, connector_type, last_fetched_ts, start_ts, is_enabled } = connectorInfo;
+    const { name, url_prefix, connector_type, last_fetched_ts, start_ts, is_enabled, config_json } = connectorInfo;
     try {
         const response = await fetch('/api/v1/connectors/new', {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',             
             },
-            body: JSON.stringify({name, url_prefix, connector_type, last_fetched_ts, start_ts, is_enabled})
+            body: JSON.stringify({name, url_prefix, connector_type, last_fetched_ts, start_ts, is_enabled, config_json})
         })
         if (response.ok) {
             const data = await response.json();
             return data;
-        } 
+        } else {
+            const err = await response.json();
+            return err;
+        }
     } catch (err) {
         return rejectWithValue(err.error);
     }

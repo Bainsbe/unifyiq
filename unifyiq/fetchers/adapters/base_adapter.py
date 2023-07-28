@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 from jsonschema import validate, ValidationError
 
+from utils.configs import get_cron_schedule
 from utils.database.unifyiq_config_db import update_last_fetched_ts
 from utils.file_utils import get_fetcher_output_path_from_config
 from utils.log_util import get_logger
@@ -57,7 +58,7 @@ class BaseAdapter(metaclass=ABCMeta):
             self.start_ts = source_config.last_fetched_ts
         else:
             self.start_ts = source_config.start_ts
-        self.end_ts = get_end_ts_from_cron_expr(source_config.last_fetched_ts, source_config.cron_expr)
+        self.end_ts = get_end_ts_from_cron_expr(source_config.last_fetched_ts, get_cron_schedule())
         self.output_path = get_fetcher_output_path_from_config(source_config, version)
 
     @abstractmethod

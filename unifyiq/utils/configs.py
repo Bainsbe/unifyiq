@@ -90,36 +90,6 @@ def get_open_ai_api_key():
     return config.get('LLM', 'open_ai_api_key')
 
 
-def get_slack_app_token():
-    """Returns the slack app token from config file `unifyiq.ini`."""
-    return config.get('Slackbot', 'app_token')
-
-
-def get_slack_bot_token():
-    """Returns the slack bot token from config file `unifyiq.ini`."""
-    return config.get('Slackbot', 'bot_token')
-
-
-def get_slack_client_signature():
-    """Returns the slack client signature from config file `unifyiq.ini`."""
-    return config.get('Slackbot', 'client_signature')
-
-
-def get_confluence_email_address():
-    """Returns the confluence email address from config file `unifyiq.ini`."""
-    return config.get('Confluence', 'email_address')
-
-
-def get_confluence_api_key():
-    """Returns the confluence api key from config file `unifyiq.ini`."""
-    return config.get('Confluence', 'api_key')
-
-
-def get_confluence_site():
-    """Returns the confluence site(organization) name from config file `unifyiq.ini`."""
-    return config.get('Confluence', 'site')
-
-
 def get_security_key():
     """Returns the security key from config file `unifyiq.ini`."""
     return config.get('Security', 'security_key')

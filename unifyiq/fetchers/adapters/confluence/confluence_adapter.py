@@ -6,11 +6,9 @@ from langchain.document_loaders import ConfluenceLoader
 from fetchers.adapters.base_adapter import BaseAdapter
 from fetchers.database.fetchers_confluence_db import get_current_page_info, insert_page_info_to_db, \
     update_page_info_to_db, get_page_id
-from utils.configs import get_confluence_api_key
-from utils.configs import get_confluence_email_address
-from utils.configs import get_confluence_site
 from utils.constants import CONFLUENCE
 from utils.database import unifyiq_config_db
+from utils.database.unifyiq_config_db import get_confluence_email_address, get_confluence_api_key
 from utils.log_util import get_logger
 
 
@@ -18,12 +16,11 @@ class ConfluenceAdapter(BaseAdapter):
 
     def __init__(self, source_config, version):
         super().__init__(source_config, version, get_logger(__name__))
-        self.username = get_confluence_email_address()
-        self.api_key = get_confluence_api_key()
-        self.site = get_confluence_site()
+        self.username = get_confluence_email_address(source_config.config_json)
+        self.api_key = get_confluence_api_key(source_config.config_json)
         self.curr_page_info = {}
         self.new_page_info = []
-        self.url = f"https://{self.site}.atlassian.net/wiki/rest/api"
+        self.url = f"{source_config.url_prefix}/wiki/rest/api"
 
     def load_metadata_from_db(self):
         # load author, title, modified date, space, page id from DB and store to a dict
@@ -93,8 +90,7 @@ class ConfluenceAdapter(BaseAdapter):
 
     def fetch_and_save_raw_data(self):
         pages = self.get_modified_pages()
-        loader = ConfluenceLoader(url="https://" + self.site + ".atlassian.net/wiki", username=self.username,
-                                  api_key=self.api_key)
+        loader = ConfluenceLoader(url=self.url, username=self.username, api_key=self.api_key)
         for space in pages:
             for page in pages[space]:
                 ts = int(datetime.datetime.strptime(page['version']['when'], '%Y-%m-%dT%H:%M:%S.%fZ').timestamp())

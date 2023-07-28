@@ -12,7 +12,6 @@
     - Please follow the instructions [here](https://docs.docker.com/engine/install/)
     - Launch the Docker Desktop application for command line tools to work
 - Slackbot
-    - **Use Alternative Testing Setup to skip this step if you are not Workspace Admin and want to test the code**
     - Please follow the instructions [here](/unifyiq/retrieval/slackbot/README.md) doc to setup slackbot
 - Milvus
     - Please follow the instructions [here](https://milvus.io/docs/install_standalone-docker.md) to setup Milvus
@@ -26,16 +25,6 @@
 
  - UI
     - Please follow instuctions in [here](/unifyiq/ui/README.md) to setup Admin UI
-
-### Alternative Testing Setup - TODO FIX THIS
-
-- If you don't want to setup Slackbot, you can use the data in [resources/](/data/fetchers/slack) folder
-- Copy the files to `/tmp/airbyte_local/unifyiq_slack` folder
-    ```commandline
-    mkdir -p /tmp/airbyte_local/unifyiq_slack
-    cp ~/unifyiq/data/fetchers/slack/* /tmp/airbyte_local/unifyiq_slack
-    ```
-- *This is just for testing the code and might not work for other data sources in the future*
 
 ### Getting Started
 
@@ -53,9 +42,6 @@
    pip3 install -r requirements.txt
     ```
 3. Follow the instruction [here](/unifyiq/fetchers/README.md) to setup slack data source
-    1. **Note:** You can skip to [Configure your fetchers](/unifyiq/fetchers/README.md#configuring-the-fetcher) step if
-       you are using Alternative Testing Setup
-
 4. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory
    ```commandline
    cp ~/unifyiq/unifyiq/conf/unifyiq.ini ~/

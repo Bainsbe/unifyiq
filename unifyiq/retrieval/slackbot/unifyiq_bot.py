@@ -2,10 +2,19 @@ from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 from api.assistant import skill_q_and_a
-from utils.configs import get_slack_bot_token, get_slack_app_token
+from utils.constants import SLACK
+from utils.database import unifyiq_config_db
+from utils.database.unifyiq_config_db import get_slack_app_token, get_slack_bot_token
 
-# Initialize your app with your bot token
-app = App(token=get_slack_bot_token())
+source_configs = unifyiq_config_db.get_fetcher_configs()
+app = None
+for source_config in source_configs:
+    if source_config.connector_type == SLACK:
+        # Initialize your app with your bot token
+        app = App(token=get_slack_bot_token(source_config.config_json))
+        break
+if not app:
+    raise Exception("No slack app found. Cannot start slack bot.")
 
 
 @app.event("app_mention")
@@ -27,4 +36,4 @@ def handle_app_mention_events(body, say, logger):
 
 # Start your app using Socket Mode
 if __name__ == "__main__":
-    SocketModeHandler(app, get_slack_app_token()).start()
+    SocketModeHandler(app, get_slack_app_token(source_config.config_json)).start()
