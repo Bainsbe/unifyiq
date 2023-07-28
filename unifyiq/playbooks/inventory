@@ -1,11 +1,11 @@
 [unifyiq]
-server1 ansible_host=172.31.90.252 ansible_ssh_private_key_file=~/.ssh/aws-micro-server.pem
+server1 ansible_host=172.31.90.211 ansible_ssh_private_key_file=~/.ssh/aws-micro-server.pem
 
 [milvus]
-server1 ansible_host=172.31.90.252 ansible_ssh_private_key_file=~/.ssh/aws-micro-server.pem
+server1 ansible_host=172.31.90.211 ansible_ssh_private_key_file=~/.ssh/aws-micro-server.pem
 
 [db]
-server1 ansible_host=172.31.90.252 ansible_ssh_private_key_file=~/.ssh/aws-micro-server.pem
+server1 ansible_host=172.31.90.211 ansible_ssh_private_key_file=~/.ssh/aws-micro-server.pem
 
 [unifyiq:vars]
 ansible_user=ubuntu

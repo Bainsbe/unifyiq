@@ -54,6 +54,7 @@
       ```commandline
       cd ~/unifyiq/unifyiq
       nohup python3 unifyiq_update_job.py >> /tmp/unifyiq_update_job.log &
-      nohup python3 -m api.app >> /tmp/unifyiq_api_job.log &
       nohup python3 -m retrieval.slackbot.unifyiq_bot >> /tmp/unifyiq_slackbot.log &
       ```
+  
+  

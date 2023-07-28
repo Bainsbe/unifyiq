@@ -86,8 +86,26 @@
   gather_facts: true
   become: true
   become_user: ubuntu
-
   tasks:
+    - name: Download file
+      get_url:
+        url: https://deb.nodesource.com/setup_18.x
+        dest: /home/ubuntu/setup_18.x
+
+    - name: Install nodejs setup
+      become_user: root
+      command: bash /home/ubuntu/setup_18.x
+      args:
+        chdir: /home/ubuntu/
+
+    - name: Install nodejs
+      become_user: root
+      apt:
+        name:
+          - nodejs
+          - nginx
+        state: present
+
     - name: Clone repository
       git:
         repo: https://github.com/unifyiq/unifyiq.git
@@ -106,6 +124,81 @@
       copy:
         src: /home/ubuntu/unifyiq.ini
         dest: /home/ubuntu/unifyiq.ini
+
+    - name: Install npm packages
+      become_user: root
+      npm:
+        name: serve
+        global: yes
+
+    - name: Install npm dependencies
+      npm:
+        path: /home/ubuntu/unifyiq/unifyiq/ui/
+        state: present
+        global: no
+
+    - name: npm build
+      command: npm run build
+      args:
+        chdir: /home/ubuntu/unifyiq/unifyiq/ui/
+
+    - name: Check if the backup folder exists
+      become_user: root
+      stat:
+        path: /var/www/html.bak
+      register: folder_stat
+
+    - name: Remove the backup folder
+      become_user: root
+      file:
+        path: /var/www/html.bak
+        state: absent
+      when: folder_stat.stat.exists == true
+
+    - name: Check if the backup folder exists
+      become_user: root
+      stat:
+        path: /var/www/html
+      register: folder_stat_2
+
+    - name: Backup the current folder
+      become_user: root
+      command: mv /var/www/html /var/www/html.bak
+      when: folder_stat_2.stat.exists == true
+
+    - name: Copy build to /var/www/html
+      become_user: root
+      command: cp -r /home/ubuntu/unifyiq/unifyiq/ui/build/ /var/www/html/
+
+    - name: Copy Nginx config file
+      become_user: root
+      copy:
+        src: /home/ubuntu/unifyiq/unifyiq/playbooks/nginx.default
+        dest: /etc/nginx/sites-available/default
+
+    - name: Restart nginx
+      become_user: root
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Find the Gunicorn PID
+      shell: "pgrep gunicorn"
+      register: gunicorn_pid
+      ignore_errors: true
+
+    - name: Kill Gunicorn process
+      command: "kill {{ item }}"
+      with_items: "{{ gunicorn_pid.stdout_lines | default([]) }}"
+      when: gunicorn_pid.stdout_lines is defined
+
+    - name: Start Gunicorn
+      command: /home/ubuntu/.local/bin/gunicorn -b 0.0.0.0:8080 api.app:app --daemon
+      args:
+        chdir: /home/ubuntu/unifyiq/unifyiq/
+      async: 0
+      poll: 0
+
 
 - name: Install and configure Milvus
   hosts: milvus
@@ -137,28 +230,3 @@
       args:
         chdir: /home/ubuntu/milvus/
 
-- name: Install UnifyIQ
-  hosts: unifyiq
-  gather_facts: true
-  become: true
-  become_user: ubuntu
-
-  tasks:
-    - name: Clone repository
-      git:
-        repo: https://github.com/unifyiq/unifyiq.git
-        dest: /home/ubuntu/unifyiq
-        version: main
-        update: yes
-
-    - name: install dependencies from requirements.txt
-      pip:
-        requirements: requirements.txt
-        chdir: /home/ubuntu/unifyiq/unifyiq
-        executable: pip3
-        extra_args: --default-timeout=1000
-
-    - name: Copy Config file
-      copy:
-        src: /home/ubuntu/unifyiq.ini
-        dest: /home/ubuntu/unifyiq.ini

@@ -17,10 +17,10 @@ The UI was created by using ReactJS, Tailwind, Charka, React router dom.
       npm is already installed. If not, continue with the next step.)
     - npm install npm@latest -g (This will install the latest version of npm globally on your machine.)
 
-## Install & Run project
+## Install & Run project for development
 
 - cd unifyiq/ui
-- You will need to run **npm install** to install all your dependencies 
+- You will need to run **npm install** to install all your dependencies
 - Run this application from this location using **npm start**
 - After installation, there are ~76 vulnerabilities...Dont worry! Its expected. npm audit is designed for Node apps so
   it flags issues that can occur when you run actual Node code in production. It is broken for front-end tooling by
