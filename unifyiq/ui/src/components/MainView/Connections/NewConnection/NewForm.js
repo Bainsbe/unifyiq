@@ -46,7 +46,7 @@ const NewForm = () => {
     }, [source]);
 
     useEffect(() => {
-        fetch('/fetcher_config_values')
+        fetch('/api/v1/connectors/fetcher_config_values')
             .then(response => response.json())
             .then(data => {
                 setConfigSettings(data)

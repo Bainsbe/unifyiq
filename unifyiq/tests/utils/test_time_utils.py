@@ -26,6 +26,11 @@ class TimeUtilTest(unittest.TestCase):
         exp = datetime.datetime(2022, 12, 31, 0, 0, 0).timestamp()
         self.assertEqual(res, exp)
 
+    def test_format_utc_timestamp(self):
+        res = time_utils.format_utc_timestamp(1620835200)
+        exp = "2021-05-12 16:00:00"
+        self.assertEqual(res, exp)
+
 
 if __name__ == '__main__':
     unittest.main()

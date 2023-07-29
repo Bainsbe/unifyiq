@@ -1,8 +1,10 @@
 import json
 
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 
+from fetchers.adapters.fetcher_configs import FETCHER_CONFIG_VALUES
 from utils.database.unifyiq_config_db import get_fetcher_configs, add_fetcher_config
+from utils.time_utils import format_utc_timestamp
 
 connector_routes = Blueprint('connector_routes', __name__)
 
@@ -18,10 +20,16 @@ def get_all():
             'connector_type': row.connector_type,
             'url_prefix': row.url_prefix,
             'is_enabled': "False" if row.is_enabled == 0 else "True",
-            'last_fetched_ts': row.last_fetched_ts,
+            'last_fetched_ts': format_utc_timestamp(row.last_fetched_ts),
+            'start_ts': format_utc_timestamp(row.start_ts),
         }
         configs_list.append(config_dict)
     return configs_list, 200
+
+
+@connector_routes.route('/fetcher_config_values')
+def fetcher_config_values():
+    return jsonify(FETCHER_CONFIG_VALUES)
 
 
 @connector_routes.route('/new', methods=['POST'])

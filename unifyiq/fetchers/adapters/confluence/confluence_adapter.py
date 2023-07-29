@@ -20,6 +20,7 @@ class ConfluenceAdapter(BaseAdapter):
         self.api_key = get_confluence_api_key(source_config.config_json)
         self.curr_page_info = {}
         self.new_page_info = []
+        self.site = source_config.url_prefix
         self.url = f"{source_config.url_prefix}/wiki/rest/api"
 
     def load_metadata_from_db(self):
@@ -90,7 +91,7 @@ class ConfluenceAdapter(BaseAdapter):
 
     def fetch_and_save_raw_data(self):
         pages = self.get_modified_pages()
-        loader = ConfluenceLoader(url=self.url, username=self.username, api_key=self.api_key)
+        loader = ConfluenceLoader(url=self.site, username=self.username, api_key=self.api_key)
         for space in pages:
             for page in pages[space]:
                 ts = int(datetime.datetime.strptime(page['version']['when'], '%Y-%m-%dT%H:%M:%S.%fZ').timestamp())
@@ -103,6 +104,7 @@ class ConfluenceAdapter(BaseAdapter):
                 if page['type'] != 'page' and page['type'] != 'blogpost' and page['status'] != 'current':
                     continue
                 doc = {'title': page['title'], 'space_key': space}
+                self.logger.info(f"Fetching page {page['id']} from space {space}")
                 documents = loader.load(include_attachments=False, limit=50, page_ids=[meta_data['page_id']])
                 for document in documents:
                     self.set_required_values_in_json(doc, id_str=get_page_id(space, meta_data['page_id']),

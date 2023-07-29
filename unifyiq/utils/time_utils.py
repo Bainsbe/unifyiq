@@ -1,5 +1,6 @@
 import datetime
 
+import pytz
 from croniter import croniter
 
 
@@ -28,3 +29,7 @@ def get_prev_cron_ts(cron_expr, base_time=datetime.datetime.now()):
 
 def get_slack_ts(ts):
     return "{:.6f}".format(ts)
+
+
+def format_utc_timestamp(ts):
+    return datetime.datetime.fromtimestamp(ts, tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")

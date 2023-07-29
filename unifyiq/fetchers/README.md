@@ -12,9 +12,10 @@ destinations.
    credentials
 
 #### Confluence Wiki
-1. Visit https://id.atlassian.com/manage-profile/security/api-tokens
-2. Create a new API token
-3. Use the email address, site name and the API token to configure the Confluence adapter in unifyiq.ini
+1. Create a new headless user in Confluence (e.g. unifyiq)
+2. Visit https://id.atlassian.com/manage-profile/security/api-tokens
+3. Create a new API token
+4. Use the email address, site name and the API token to configure the Confluence adapter in unifyiq.ini
 
 ### Destinations
 
