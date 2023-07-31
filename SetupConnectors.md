@@ -16,7 +16,7 @@
        Name the token as **"unifyiq"**
        Add scope as `connections:write` scope
        <br>![App Token](/resources/images/app_token.png)<br>
-    5. **Access Token** - Navigate to OAuth & Permissions under Features section of unifyiq app. Copy the token from **"Bot
+    5. **Bot Token** - Navigate to OAuth & Permissions under Features section of unifyiq app. Copy the token from **"Bot
        User OAuth Token"** ![Bot Auth Token](/resources/images/auth_token.png)
    
 10. Go to Admin UI, Add a connector, Choose Slack.
