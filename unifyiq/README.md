@@ -2,7 +2,7 @@
 
 ## Stand alone setup
 
-### Pre-requisite
+### Install Pre-requisite
 
 - Python 3.10+
     - https://www.python.org/downloads/macos/ OR https://www.python.org/downloads/windows/
@@ -23,10 +23,8 @@
       ```
     - Run `docker-compose down` to bring it down
 
- - UI
-    - Please follow instuctions in [here](/unifyiq/ui/README.md) to setup Admin UI
 
-### Setup Backend
+### Setup Platform Backend
 
 1. Clone the repo to your home directory. In following commands, modify the path to repo path if you are using a
    different path than home directory
@@ -42,7 +40,7 @@
    pip3 install -r requirements.txt
     ```
 
-### Setup Admin UI
+### Setup Platform Admin UI
 
 Follow the instructions [here](/unifyiq/ui/README.md)
 
