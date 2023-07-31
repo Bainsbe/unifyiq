@@ -10,12 +10,15 @@ destinations.
 #### Slack
 1. Follow the instructions [here](/unifyiq/retrieval/slackbot/README.md) to setup the SlackBot and get the required
    credentials
+2. Use Admin UI to Add a new source
+3. URL Prefix: https://[WORKSPACE].slack.com/
 
 #### Confluence Wiki
 1. Create a new headless user in Confluence (e.g. unifyiq)
 2. Visit https://id.atlassian.com/manage-profile/security/api-tokens
 3. Create a new API token
-4. Use the email address, site name and the API token to configure the Confluence adapter in unifyiq.ini
+4. Use the email address, site name and the API token to configure the Confluence adapter in admin UI
+5. URL Prefix: https://[WORKSPACE].atlassian.net/
 
 ### Destinations
 
@@ -27,7 +30,7 @@ destinations.
     1. If the source is already supported by LangChain, then use the LangChain library
     2. If not, then use the source API directly
 2. Create a new adapter that extends BaseAdapter
-3. Create the necessary metadata tables in the database and add to (schemas)[/schema/database/]
+3. Create the necessary metadata tables in the database and add to [schemas](/schema/database/ConnectorsMetaData.sql)
 4. Implement all abstract methods to extract metadata and data from the source
     1. load_metadata_from_db
         1. Extract the metadata from database to determine the changes
@@ -44,9 +47,12 @@ destinations.
         1. Save the metadata to the database
         2. e.g. Slack Channel Information, Slack Channel membership etc.
 5. Add the api layer to the adapter if we need to expose the metadata in UI
+6. Add an entry in [fetcher_configs.py](/unifyiq/fetchers/adapters/fetcher_configs.py) for it to be added to UI
 
-## Configuring the fetcher
+## Configuring the fetcher (In Local env.)
+Use Admin UI to add and configure Fetchers. http://localhost:3000
 
+### Alternate Approach
 1. Insert the following row to the `unifyiq_configs` table after
 2. Replace the values in `[]` with the appropriate values
     1. WORKSPACE - Slack Workspace
