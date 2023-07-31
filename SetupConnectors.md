@@ -22,15 +22,11 @@
 10. Update these in the UI when creating slack connector
       ![Admin UI](/resources/images/setup-slack-admin-ui.png)
 
-## Steps to interact with UnifyIQ SlackBot (Needed only for dev env. in laptop)
 
-1. Run the following command to start the slack SocketMode server
-    ```commandline
-    python3 -m retrieval.slackbot.unifyiq_bot
-    ```
-2. For Mac, If there are any SSL errors that's preventing the server from starting, run the following command
-    ```commandline
-    /Applications/Python\ 3.10/Install\ Certificates.command
-    ```
-2. In any channel, type `@unifyiq <question>` to get the list of commands
-    1. e.g. ```@unifyiq what is the status of project skynet```
+#### Confluence Wiki
+1. Create a new headless user in Confluence (e.g. unifyiq)
+2. Visit https://id.atlassian.com/manage-profile/security/api-tokens
+3. Create a new API token
+4. Use the email address, site name and the API token to configure the Confluence adapter in admin UI
+5. URL Prefix: https://[WORKSPACE].atlassian.net/
+
