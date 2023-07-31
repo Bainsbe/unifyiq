@@ -4,10 +4,11 @@
 2. Visit https://api.slack.com/apps
 3. Click on Create New App Button and Select "From an App Manifest"
    Option ![Create Slack Bot](/resources/images/slack_bot_create.png)
-4. Chose the workspace if you are using multiple workspaces
-5. Upload the [manifest](unifyiq.yaml)
-6. Create and Install the app to your workplace
-7. Note the credentials for the slackbot
+4. Choose the workspace if you are using multiple workspaces
+5. Choose YAML
+6. Upload the [manifest](unifyiq.yaml)
+7. Create and Install the app to your workplace
+8. Note the credentials for the slackbot
     1. Client ID
     2. Signing Secret
     3. Access Token - Navigate to OAuth & Permissions under Features section of unifyiq app. Copy the token from "Bot
@@ -15,7 +16,7 @@
     4. App Token - Navigate to Basic Information under Settings section of unifyiq app. Add an app level token with
        `connections:write` scope
        <br>![App Token](/resources/images/app_token.png)<br>
-8. Update these in the UI when creating slack connector
+9. Update these in the UI when creating slack connector
 
 ## Steps to interact with UnifyIQ SlackBot (Needed only for dev env. in laptop)
 
