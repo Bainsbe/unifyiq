@@ -26,7 +26,7 @@
  - UI
     - Please follow instuctions in [here](/unifyiq/ui/README.md) to setup Admin UI
 
-### Getting Started
+### Setup Backend
 
 1. Clone the repo to your home directory. In following commands, modify the path to repo path if you are using a
    different path than home directory
@@ -41,30 +41,40 @@
    cd ~/unifyiq/unifyiq
    pip3 install -r requirements.txt
     ```
+
+### Setup UI
+
+Follow the instructions [here](/unifyiq/ui/README.md)
+
+### Configure Connectors
+
 3. Follow the instruction [here](/unifyiq/fetchers/README.md) to setup slack data source
-4. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory
+5. Add Connectors using the Admin UI
+
+### Bring up Backend
+1. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory
    ```commandline
    cp ~/unifyiq/unifyiq/conf/unifyiq.ini ~/
    ```
     1. In ~/unifyiq.ini do the required changes.
     2. Update the configs in UnifyIQ section according to your needs
-5. Add Connectors using the Admin UI
-6. Run the following command to consume the data
+
+7. Run the following command to consume the data
     ```commandline
     python3 -m fetchers.update_fetchers
     ```
-7. Once the data is consumed, run the following command to index the data.
+8. Once the data is consumed, run the following command to index the data.
     ```commandline
     python3 -m core.update_core
     ```
-8. Once the data is indexed, run the following command to start the web server
+9. Once the data is indexed, run the following command to start the web server
     ```commandline
     python3 -m api.app
     curl -X POST "http://127.0.0.1:8080/get_answer" \
      -H "Content-Type: application/x-www-form-urlencoded" \
      -d "question=what is the status of project skynet?"
     ```
-9. To start the slackbot, run the following command
+10. To start the slackbot, run the following command
     ```commandline
     python3 -m retrieval.slackbot.unifyiq_bot
     ```
