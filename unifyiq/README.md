@@ -1,6 +1,6 @@
 # UnifyIQ - Knowledge Assistant
 
-## Stand alone setup
+## Standalone setup
 
 ### Install Pre-requisite
 
