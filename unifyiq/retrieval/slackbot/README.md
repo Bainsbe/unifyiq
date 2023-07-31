@@ -20,6 +20,7 @@
        User OAuth Token"** ![Bot Auth Token](/resources/images/auth_token.png)
    
 10. Update these in the UI when creating slack connector
+      ![Admin UI](/resources/images/setup-slack-admin-ui.png)
 
 ## Steps to interact with UnifyIQ SlackBot (Needed only for dev env. in laptop)
 
