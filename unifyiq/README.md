@@ -11,8 +11,6 @@
 - Docker
     - Please follow the instructions [here](https://docs.docker.com/engine/install/)
     - Launch the Docker Desktop application for command line tools to work
-- Slackbot
-    - Please follow the instructions [here](/unifyiq/retrieval/slackbot/README.md) doc to setup slackbot
 - Milvus
     - Please follow the instructions [here](https://milvus.io/docs/install_standalone-docker.md) to setup Milvus
       ```commandline
@@ -46,7 +44,7 @@ Follow the instructions [here](/unifyiq/ui/README.md)
 
 ### Configure Connectors
 
-Follow the instruction [here](/unifyiq/fetchers/README.md) to setup data sources
+Follow the instruction [here](/SetupConnectors.md) to setup data sources
 
 ### Run Platform
 1. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory
