@@ -23,7 +23,7 @@
       1. Make sure to use your workspace specific slack url in URL Prefix: https://[WORKSPACE].slack.com/
       2. Set the start date to be the date from which historical data needs to be ingested.
       3. See example values here:
-      ![Admin UI](/resources/images/setup_setup_image.png)
+      ![Admin UI](/resources/images/slack_setup_image.png)
 
 
 ### Steps to setup Confluence Wiki
