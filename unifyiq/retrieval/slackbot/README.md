@@ -15,9 +15,9 @@
     4. App Token - Navigate to Basic Information under Settings section of unifyiq app. Add an app level token with
        `connections:write` scope
        <br>![App Token](/resources/images/app_token.png)<br>
-8. Update these in ~/unifyiq.ini
+8. Update these in the UI when creating slack connector
 
-## Steps to interact with UnifyIQ SlackBot
+## Steps to interact with UnifyIQ SlackBot (Needed only for dev env. in laptop)
 
 1. Run the following command to start the slack SocketMode server
     ```commandline
