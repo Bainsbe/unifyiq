@@ -19,14 +19,14 @@
     5. Access Token - Navigate to OAuth & Permissions under Features section of unifyiq app. Copy the token from **"Bot
        User OAuth Token"** ![Bot Auth Token](/resources/images/auth_token.png)
    
-10. Update the above keys in the UI when creating slack connector.
+10. Go to Admin UI, Add a connector, Choose Slack and enter the above values.
       1. Make sure to use your workspace specific slack url in URL Prefix: https://[WORKSPACE].slack.com/
       2. Set the start date to be the date from which historical data needs to be ingested.
       3. See example values here:
-      ![Admin UI](/resources/images/setup-slack-admin-ui.png)
+      ![Admin UI](/resources/images/setup_setup_image.png)
 
 
-#### Steps to setup Confluence Wiki
+### Steps to setup Confluence Wiki
 1. Create a new headless user in Confluence (e.g. unifyiq)
 2. Visit https://id.atlassian.com/manage-profile/security/api-tokens
 3. Create a new API token
