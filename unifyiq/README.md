@@ -48,23 +48,23 @@
    ```
     1. In ~/unifyiq.ini do the required changes.
     2. Update the configs in UnifyIQ section according to your needs
-    3. Update the various keys and tokens in the config file
-5. Run the following command to consume the data
+5. Add Connectors using the Admin UI
+6. Run the following command to consume the data
     ```commandline
     python3 -m fetchers.update_fetchers
     ```
-6. Once the data is consumed, run the following command to index the data.
+7. Once the data is consumed, run the following command to index the data.
     ```commandline
     python3 -m core.update_core
     ```
-7. Once the data is indexed, run the following command to start the web server
+8. Once the data is indexed, run the following command to start the web server
     ```commandline
     python3 -m api.app
     curl -X POST "http://127.0.0.1:8080/get_answer" \
      -H "Content-Type: application/x-www-form-urlencoded" \
      -d "question=what is the status of project skynet?"
     ```
-8. To start the slackbot, run the following command
+9. To start the slackbot, run the following command
     ```commandline
     python3 -m retrieval.slackbot.unifyiq_bot
     ```
