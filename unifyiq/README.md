@@ -46,8 +46,7 @@ Follow the instructions [here](/unifyiq/ui/README.md)
 
 ### Configure Connectors
 
-1. Follow the instruction [here](/unifyiq/fetchers/README.md) to setup slack data source
-2. Add Connectors using the Admin UI
+Follow the instruction [here](/unifyiq/fetchers/README.md) to setup data sources
 
 ### Run Platform
 1. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory
