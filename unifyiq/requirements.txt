@@ -20,3 +20,6 @@ Pillow
 reportlab
 svglib
 pycryptodome
+pyjwt
+python-dotenv
+flask-jwt-extended

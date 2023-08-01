@@ -1,12 +1,13 @@
-import { Route, useNavigate } from "react-router-dom"
+import {Navigate, Outlet } from "react-router-dom"
 
-const ProtectedRoute = (props) => {
-    const navigate = useNavigate('/login');
-    const user = 'user'
+const ProtectedRoute = () => {
+    const user = localStorage.getItem('token');
+
+    if (!user) {
+        return <Navigate to='/login'/>
+    }
     return (
-        <Route {...props}>
-            {user ? props.children : navigate('/login')}
-        </Route>
+        <Outlet/>
     )
 }
 

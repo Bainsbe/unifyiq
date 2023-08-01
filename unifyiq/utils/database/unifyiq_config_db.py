@@ -54,7 +54,8 @@ def add_fetcher_config(name, connector_type, url_prefix, cron_expr, start_ts, la
     with session_scope() as session:
         try:
             new = fetchers_configs.insert().values(name=name, connector_type=connector_type, url_prefix=url_prefix,
-                                                   cron_expr=cron_expr, start_ts=start_ts, last_fetched_ts=last_fetched_ts,
+                                                   cron_expr=cron_expr, start_ts=start_ts,
+                                                   last_fetched_ts=last_fetched_ts,
                                                    is_enabled=is_enabled, config_json=config_json)
             session.execute(new)
             session.commit()

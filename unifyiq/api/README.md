@@ -7,11 +7,13 @@ limitations and security risks.
 In a production environment, it is recommended to use a production-ready WSGI server, in this project, we use GUNICORN
 which is designed to handle higher traffic loads and provide better performance, stability, and security.
 
-Test flask app with Gunicorn locally: 
+Test flask app with Gunicorn locally:
 Run following command
+
 ```commandline
 cd ~/unifyiq/unifyiq
 gunicorn -b 0.0.0.0:8080 api.app:app
 ```
+
 It starts Gunicorn with your Flask app. It will handle incoming HTTP requests and route them to the appropriate Flask
 routes for processing.

@@ -12,7 +12,12 @@ const initialState = connectorAdapter.getInitialState({
 })
 
 export const listConnectors = createAsyncThunk('connector/listConnectors', async () => {
-    const response = await fetch('/api/v1/connectors/list',)
+    const response = await fetch('/api/v1/connectors/list', {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+        }
+    });
     const data = await response.json();
     return data;
 })
@@ -23,7 +28,8 @@ export const addConnectors = createAsyncThunk('connector/addConnectors', async (
         const response = await fetch('/api/v1/connectors/new', {
             method: 'POST', 
             headers: {
-                'Content-Type': 'application/json',             
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
             },
             body: JSON.stringify({name, url_prefix, connector_type, last_fetched_ts, start_ts, is_enabled, config_json})
         })
@@ -71,5 +77,8 @@ const connectorSlice = createSlice({
     }
 })
 
+function getToken() {
+    return localStorage.getItem('token')
+}
 
 export const connectorReducer= connectorSlice.reducer;

@@ -4,34 +4,25 @@ import SideBar from './components/SideBar'
 import MainView from './components/MainView'
 import NewConnection from './components/MainView/Connections/NewConnection'
 import { Login } from './components/Login'
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 function App() {
-  // const [loaded, setLoaded] = useState(false); 
-
-  // useEffect(() => {
-    
-  // })
-  // if (!loaded) {
-  //   return null;
-  // }
-
-
-
   return (
     <ChakraProvider>
       <Routes>
-        <Route
-          path='/'
-          element={
-            <div className='App flex flex-row w-full h-full'>
-              <SideBar />
-              <MainView/>
-            </div>
-          }
-        >
-        </Route>
+
+          <Route
+            path='/'
+            element={
+              <RequireAuth redirectTo='/login'>
+                <div className='App flex flex-row w-full h-full'>
+                  <SideBar />
+                  <MainView/>
+               </div>
+              </RequireAuth>       
+            }
+            >
+            </Route>
         <Route
           path='/login'
           element={
@@ -41,7 +32,6 @@ function App() {
             </div>
           }
         >
-
         </Route>
         <Route
           path='/connections/new'
@@ -52,9 +42,15 @@ function App() {
             </div>
           }
         />
+        
+        
       </Routes>
     </ChakraProvider>
   );
+}
+function RequireAuth({ children, redirectTo }) {
+  let isAuthenticated = localStorage.getItem('token');
+  return isAuthenticated ? children : <Navigate to={redirectTo} />;
 }
 
 export default App;

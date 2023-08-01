@@ -20,7 +20,8 @@ import {useDispatch} from 'react-redux'
 
 
 function isValidUrl(url) {
-      return true;
+    const urlRegex = /^(?:(?:https?|ftp):\/\/)?(?:www\.)?[a-z0-9\-]+\.[a-z]{2,}(?:\.[a-z]{2,})?(?:\/.*)?$/i;
+    return urlRegex.test(url);
   }
 
 const NewForm = () => {
@@ -43,17 +44,22 @@ const NewForm = () => {
         //potential bug is if the name of the source != the name in options
         //ensure constants in constants.js are the same as constants.py
         setConfig(configSettings[source]);
-    }, [source]);
+    }, [source, setConfig, configSettings]);
 
     useEffect(() => {
-        fetch('/api/v1/connectors/fetcher_config_values')
+        fetch('/api/v1/connectors/fetcher_config_values', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        }
+        )
             .then(response => response.json())
             .then(data => {
                 setConfigSettings(data)
                 setConfig(data[source])
             })
             .catch(error => console.error('Error:', error));
-    }, [])
+    }, [source])
 
     const handleConfigChange = (name) => (e) => {
         const {value} = e.target;

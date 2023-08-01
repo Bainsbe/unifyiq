@@ -1,7 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import UserProfile from "../UserProfile";
 const SideBar = () => {
     const navigate = useNavigate();
-
+    const location = useLocation();
+    const path = location.pathname;
     const handleClick = () => {
         navigate('/');
     }
@@ -27,9 +29,9 @@ const SideBar = () => {
             img:'fa-solid fa-screwdriver-wrench'
         }
     ]
-
+    
     return (
-        <nav className='w-[100px] px-[3px] py-[20px] relative h-full bg-white flex flex-col items-center'>
+        <nav className='w-[100px] px-[3px] py-[20px] relative h-full bg-white flex flex-col items-center justify-between'>
             <div>
                 <div className='flex items-center justify-center' onClick={handleClick}>
                     <img
@@ -56,6 +58,15 @@ const SideBar = () => {
                     )
                 }
             </ul> */}
+            <div>
+                {
+                    path !== '/login' && <UserProfile/>
+                }
+                
+            </div>
+            <div>
+                
+            </div>
         </nav>
     )
 };

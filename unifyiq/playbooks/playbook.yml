@@ -66,7 +66,7 @@
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
-        version: main
+        version: uiauth2
         update: yes
 
     - name: Execute MySQL command file
@@ -87,6 +87,9 @@
   gather_facts: true
   become: true
   become_user: ubuntu
+
+  vars:
+    log_dir: "{{lookup('ansible.builtin.ini', 'log_dir', section='UnifyIQ', file='/home/ubuntu/unifyiq.ini')}}"
   tasks:
     - name: Download file
       get_url:
@@ -111,7 +114,7 @@
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
-        version: main
+        version: uiauth2
         update: yes
 
     - name: install dependencies from requirements.txt
@@ -197,7 +200,7 @@
       when: gunicorn_pid.stdout_lines is defined
 
     - name: Start Gunicorn
-      command: /home/ubuntu/.local/bin/gunicorn -b 0.0.0.0:8080 api.app:app --daemon
+      command: "/home/ubuntu/.local/bin/gunicorn -b 0.0.0.0:8080 --access-logfile {{log_dir}}/gunicorn-access.log --error-logfile {{log_dir}}/gunicorn-error.log api.app:app --daemon"
       args:
         chdir: /home/ubuntu/unifyiq/unifyiq/
       async: 0

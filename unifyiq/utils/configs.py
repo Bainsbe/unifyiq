@@ -98,3 +98,18 @@ def get_security_key():
 def get_storage_encryption_key():
     """Returns the encryption key from config file `unifyiq.ini`."""
     return config.get('Security', 'storage_encryption_key')
+
+
+def get_jwt_secret_key():
+    """Returns the JWT secret key from config file `unifyiq.ini`."""
+    return config.get("Security", "jwt_secret_key")
+
+
+def get_otp_email():
+    """Returns the OTP email from config file `unifyiq.ini`."""
+    return config.get("EmailOTP", "email")
+
+
+def get_otp_password():
+    """Returns the OTP email from config file `unifyiq.ini`."""
+    return config.get("EmailOTP", "password")

@@ -1,6 +1,7 @@
 import json
 
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 
 from fetchers.adapters.fetcher_configs import FETCHER_CONFIG_VALUES
 from utils.database.unifyiq_config_db import get_fetcher_configs, add_fetcher_config
@@ -10,6 +11,7 @@ connector_routes = Blueprint('connector_routes', __name__)
 
 
 @connector_routes.route('/list')
+@jwt_required()
 def get_all():
     query_result = get_fetcher_configs()
     configs_list = []
@@ -28,11 +30,13 @@ def get_all():
 
 
 @connector_routes.route('/fetcher_config_values')
+@jwt_required()
 def fetcher_config_values():
     return jsonify(FETCHER_CONFIG_VALUES)
 
 
 @connector_routes.route('/new', methods=['POST'])
+@jwt_required()
 def add_new():
     try:
         data = request.get_json()
@@ -49,5 +53,4 @@ def add_new():
         return {'status': 'success'}, 201
     except Exception as e:
         print(str(e))
-        print('hello noooooo')
         return {'error': 'Please try again'}, 400

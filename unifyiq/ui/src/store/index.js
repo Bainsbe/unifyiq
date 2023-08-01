@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './userReducer';
 import { connectorReducer } from './connectorReducer';
+import {sessionReducer} from './sessionReducer'
 
 const store = configureStore({
     reducer: {
-        user: userReducer, 
+        session: sessionReducer, 
         connectors: connectorReducer
     }
 })
