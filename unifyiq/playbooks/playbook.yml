@@ -199,6 +199,20 @@
       with_items: "{{ gunicorn_pid.stdout_lines | default([]) }}"
       when: gunicorn_pid.stdout_lines is defined
 
+    - name: Ensure the directory exists
+      become: yes
+      file:
+        path: "{{log_dir}}"
+        state: directory
+
+    - name: Change the owner of the directory
+      become: yes  # This allows the task to run with escalated privileges (sudo)
+      file:
+        path: "{{log_dir}}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+
     - name: Start Gunicorn
       command: "/home/ubuntu/.local/bin/gunicorn -b 0.0.0.0:8080 --access-logfile {{log_dir}}/gunicorn-access.log --error-logfile {{log_dir}}/gunicorn-error.log api.app:app --daemon"
       args:
