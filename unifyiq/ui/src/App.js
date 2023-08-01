@@ -4,9 +4,36 @@ import SideBar from './components/SideBar'
 import MainView from './components/MainView'
 import NewConnection from './components/MainView/Connections/NewConnection'
 import { Login } from './components/Login'
-import { Navigate } from 'react-router-dom'
-
+import { Navigate, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import jwt_decode from 'jwt-decode'
 function App() {
+  function RequireAuth({ children, redirectTo }) {
+    const navigate = useNavigate()
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const decodedToken = jwt_decode(token);
+        const tokenExpiredTime = decodedToken.exp * 1000;
+        const currentTime = Date.now();
+        if (currentTime < tokenExpiredTime) {
+          setIsAuthenticated(true);
+          navigate('/')
+        } else {
+          setIsAuthenticated(false);
+          localStorage.removeItem('token');
+          navigate('/login');
+        }
+      } else {
+        setIsAuthenticated(false);
+        navigate('/login');
+      }
+    }, [navigate]);
+
+    return isAuthenticated ? children : <Navigate to={redirectTo} />;
+  }
+
   return (
     <ChakraProvider>
       <Routes>
@@ -47,10 +74,6 @@ function App() {
       </Routes>
     </ChakraProvider>
   );
-}
-function RequireAuth({ children, redirectTo }) {
-  let isAuthenticated = localStorage.getItem('token');
-  return isAuthenticated ? children : <Navigate to={redirectTo} />;
 }
 
 export default App;
