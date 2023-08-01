@@ -81,6 +81,36 @@
         target: "{{item}}"
       with_items: "{{ sql_files }}"
 
+- name: Install and configure Milvus
+  hosts: milvus
+  become: yes
+  become_user: ubuntu
+
+  tasks:
+    - name: Install dependencies
+      become_user: root
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Create directory
+      file:
+        path: /home/ubuntu/milvus/
+        state: directory
+
+    - name: Download file
+      get_url:
+        url: https://github.com/milvus-io/milvus/releases/download/v2.2.11/milvus-standalone-docker-compose.yml
+        dest: /home/ubuntu/milvus/docker-compose.yml
+
+    - name: Start Milvus container
+      become_user: root
+      command: docker-compose up -d
+      args:
+        chdir: /home/ubuntu/milvus/
+
 
 - name: Install UnifyIQ
   hosts: unifyiq
@@ -220,34 +250,4 @@
       async: 0
       poll: 0
 
-
-- name: Install and configure Milvus
-  hosts: milvus
-  become: yes
-  become_user: ubuntu
-
-  tasks:
-    - name: Install dependencies
-      become_user: root
-      apt:
-        name:
-          - docker.io
-          - docker-compose
-        state: present
-
-    - name: Create directory
-      file:
-        path: /home/ubuntu/milvus/
-        state: directory
-
-    - name: Download file
-      get_url:
-        url: https://github.com/milvus-io/milvus/releases/download/v2.2.11/milvus-standalone-docker-compose.yml
-        dest: /home/ubuntu/milvus/docker-compose.yml
-
-    - name: Start Milvus container
-      become_user: root
-      command: docker-compose up -d
-      args:
-        chdir: /home/ubuntu/milvus/
 
