@@ -66,7 +66,7 @@
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
-        version: uiauth2
+        version: main
         update: yes
 
     - name: Execute MySQL command file
@@ -114,7 +114,7 @@
       git:
         repo: https://github.com/unifyiq/unifyiq.git
         dest: /home/ubuntu/unifyiq
-        version: uiauth2
+        version: main
         update: yes
 
     - name: install dependencies from requirements.txt
