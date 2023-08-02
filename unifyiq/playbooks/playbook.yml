@@ -21,9 +21,9 @@
 
   vars:
     # TODO Change these file name to the path of ini file for each customer
-    mysql_user: "{{lookup('ansible.builtin.ini', 'username', section='Database', file='/home/ubuntu/unifyiq.ini')}}"
-    mysql_password: "{{lookup('ansible.builtin.ini', 'password', section='Database', file='/home/ubuntu/unifyiq.ini')}}"
-    mysql_db_name: "{{lookup('ansible.builtin.ini', 'name', section='Database', file='/home/ubuntu/unifyiq.ini')}}"
+    mysql_user: "{{lookup('ansible.builtin.ini', 'username', section='Database', file='/home/ubuntu/<folder>/unifyiq.ini')}}"
+    mysql_password: "{{lookup('ansible.builtin.ini', 'password', section='Database', file='/home/ubuntu/<folder>/unifyiq.ini')}}"
+    mysql_db_name: "{{lookup('ansible.builtin.ini', 'name', section='Database', file='/home/ubuntu/<folder>/unifyiq.ini')}}"
     sql_files:
       - /home/ubuntu/unifyiq/schema/database/Common.sql
       - /home/ubuntu/unifyiq/schema/database/ConnectorsMetaData.sql
@@ -119,7 +119,8 @@
   become_user: ubuntu
 
   vars:
-    log_dir: "{{lookup('ansible.builtin.ini', 'log_dir', section='UnifyIQ', file='/home/ubuntu/unifyiq.ini')}}"
+    #TODO: Add customer specific folder name
+    log_dir: "{{lookup('ansible.builtin.ini', 'log_dir', section='UnifyIQ', file='/home/ubuntu/<folder>/unifyiq.ini')}}"
   tasks:
     - name: Download file
       get_url:
@@ -157,7 +158,7 @@
     - name: Copy Config file
       copy:
         # TODO Change the file to the path of ini file for each customer
-        src: /home/ubuntu/unifyiq.ini
+        src: /home/ubuntu/<folder>/unifyiq.ini
         # This path should not be changed. It is the path where the config file is copied to
         # and application reads from home directory
         dest: /home/ubuntu/unifyiq.ini
