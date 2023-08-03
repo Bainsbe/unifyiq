@@ -1,6 +1,4 @@
-# UnifyIQ - Knowledge Assistant
-
-## Standalone setup
+# Dev Setup
 
 ### Install Pre-requisite
 
@@ -79,9 +77,3 @@ Follow the instruction [here](/SetupConnectors.md) to setup data sources
     ```commandline
     /Applications/Python\ 3.10/Install\ Certificates.command
     ```
-
-
-## AWS / Cloud Setup
-
-1. These instructions are tested in AWS. Should work in other cloud providers as well.
-2. Follow the instructions [here](/unifyiq/playbooks/README.md) to setup the infrastructure and start the services
