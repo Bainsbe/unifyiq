@@ -15,6 +15,7 @@ logger = get_logger(__name__)
 
 def run_application(version):
     try:
+        logger.info("Getting fetcher config")
         source_configs = unifyiq_config_db.get_fetcher_configs()
         reload_config()
         current_date_hod = version.strftime("%Y-%m-%dT%H-%M-00")
