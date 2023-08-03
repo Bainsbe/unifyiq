@@ -9,8 +9,8 @@
       - brew services start mysql
       - mysql_secure_installation
    
-### Build Database (Run this whenever schema changes)
+### Build/Rebuild Database (Run this whenever schema changes)
   - Run the SQL Commands in [schema folder](/schema/database/) to setup the tables
-  - First run the commands in [Common.sql](/schema/database/Common.sql) followed by others
+  - Run the following commands
     - `mysql -u<user> -p < Common.sql`
     - `mysql -u<user> -p < ConnectorsMetaData.sql`
