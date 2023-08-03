@@ -11,7 +11,7 @@ We hold a strong conviction in the power of **open-source solutions** as the fou
 ![UnifyIQ Mission](resources/images/unify-iq-mission.jpg)
 
 ### Getting Started
-Please follow the instructions [here](/unifyiq/README.md)
+Please follow the instructions for [Dev Setup](/unifyiq/README.md). For setting up the service on AWS, see [AWS Setup](https://docs.unifyiq.co/playbooks)
 ### UnifyIQ Tech Overview.
 Please refer to this [document](https://docs.google.com/document/d/1FxmtSwrd_sa_Lt9MTp39k-zsXMc_qgqbCVd93q3b0oQ/edit?usp=sharing) for tech design/overview of UnifyIQ. Please feel free to leave any comments in the doc.
 
