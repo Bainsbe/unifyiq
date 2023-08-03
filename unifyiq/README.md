@@ -7,7 +7,7 @@
 - Python 3.10+
     - https://www.python.org/downloads/macos/ OR https://www.python.org/downloads/windows/
 - MySQL
-    - Please follow the instructions [here](/schema/database/README.md) to setup MySQL Database
+    - Please follow the instructions [here](/schema/database/README.md) to setup MySQL Database. Note that after any schema change, DB needs to be [rebuilt](/schema/database/README.md#build-database-run-this-whenever-schema-changes).
 - Docker
     - Please follow the instructions [here](https://docs.docker.com/engine/install/)
     - Launch the Docker Desktop application for command line tools to work
