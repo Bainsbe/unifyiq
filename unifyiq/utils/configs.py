@@ -113,3 +113,7 @@ def get_otp_email():
 def get_otp_password():
     """Returns the OTP email from config file `unifyiq.ini`."""
     return config.get("EmailOTP", "password")
+
+def get_env():
+    """Returns the OTP email from config file `unifyiq.ini`."""
+    return config.get("UnifyIQ", "env")

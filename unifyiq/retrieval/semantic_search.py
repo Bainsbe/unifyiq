@@ -1,8 +1,12 @@
 from core.vectordb.milvus import Milvus
 
-vectors_store = Milvus()
-vectors_store.initialize_search()
+from utils.configs import get_env
 
+if get_env() == "prod":
+    vectors_store = Milvus()
+    vectors_store.initialize_search()
+else:
+    print(get_env() + " env, skipping initialization of milvus")
 
 def semantic_search(query):
     top_k_results = vectors_store.search(query, 2)
