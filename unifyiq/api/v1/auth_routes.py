@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, unset_jwt_cookies
 
-from utils.configs import get_admin_emails, get_otp_email, get_otp_password
+from utils.configs import get_admin_emails, get_otp_email, get_otp_password, get_env
 from utils.database.otpuser_db import get_user, add_user_otp, update_user_otp
 
 auth_routes = Blueprint('auth_routes', __name__)
@@ -77,11 +77,17 @@ def check_valid_otp(email, otp, time):
 def send_otp():
     data = request.get_json()
     email = data.get('email')
-    otp = generate_otp()
+
+    if get_env() == 'dev':
+        otp = '123456'
+    else:
+        otp = generate_otp()
+
     try:
         send_otp_emai(email, otp)
     except Exception as e:
         return jsonify({'error: Failed to sent OTP'}), 500
+
     user = get_user(email)
 
     now = datetime.now()
