@@ -83,6 +83,16 @@ Follow the instruction [here](/SetupConnectors.md) to setup data sources
     python3 -m core.update_core
     ```
 
+### Quick test of Q&A API
+
+1. Change env parameter in config file to **test** and restart API server (**dev** env doesn't initialize Vector DB connection)
+2. To test the API
+    ```commandline
+    curl -X POST "http://localhost:8080/get_answer" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "question=How do I setup my dev environment"
+    ```
+    
 ### Run Slackbot Server to answer questions from bot added to Slack
 
 1. To start the slackbot, run the following command
