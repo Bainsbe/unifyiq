@@ -22,6 +22,14 @@
    cd ~/unifyiq/unifyiq
    pip3 install -r requirements.txt
     ```
+
+### Update Config
+
+1. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory and make necessary changes
+   ```commandline
+   cp ~/unifyiq/unifyiq/conf/unifyiq.ini ~/
+   ```
+  
 ### Run API Server
 
 1. Run the following command to start the API server
@@ -34,6 +42,7 @@
      -H "Content-Type: application/x-www-form-urlencoded" \
      -d "question=what is the status of project skynet?"
     ```
+    
 ### Setup and Run Admin UI
 
 Follow the instructions [here](/unifyiq/ui/README.md)
@@ -60,18 +69,11 @@ Follow the instruction [here](/SetupConnectors.md) to setup data sources
 
 ### Run Data Fetcher and Indexer
 
-1. Copy the [config file](/unifyiq/conf/unifyiq.ini) to your home directory
-   ```commandline
-   cp ~/unifyiq/unifyiq/conf/unifyiq.ini ~/
-   ```
-    1. In ~/unifyiq.ini do the required changes.
-    2. Update the configs in UnifyIQ section according to your needs
-
-2. Run the following command to consume the data
+1. Run the following command to consume the data
     ```commandline
     python3 -m fetchers.update_fetchers
     ```
-3. Once the data is consumed, run the following command to index the data.
+2. Once the data is consumed, run the following command to index the data.
     ```commandline
     python3 -m core.update_core
     ```
