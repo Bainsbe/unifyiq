@@ -7,7 +7,7 @@
 - MySQL
     - Please follow the instructions [here](/schema/database/README.md) to setup MySQL Database. Note that after any schema change, DB needs to be [rebuilt](/schema/database/README.md#build-database-run-this-whenever-schema-changes).
 
-### Install source code and Dependencies
+### Install Source Code and Dependencies
 
 1. Clone the repo to your home directory. In following commands, modify the path to repo path if you are using a
    different path than home directory
