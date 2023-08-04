@@ -33,7 +33,7 @@
     curl -X POST "http://localhost:8080/get_answer" \
      -H "Content-Type: application/x-www-form-urlencoded" \
      -d "question=what is the status of project skynet?"
-
+    ```
 ### Setup and Run Admin UI
 
 Follow the instructions [here](/unifyiq/ui/README.md)
