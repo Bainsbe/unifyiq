@@ -1,6 +1,6 @@
 ## AWS Setup
 
-### Controller
+### Controller Instance for Ansible
 
 - Launch an EC2 instance with the following settings:
     - AMI: Ubuntu Server 18.04 LTS (HVM), SSD Volume Type
@@ -8,7 +8,7 @@
     - Security Group: SSH, HTTP, HTTPS
     - Key Pair: Create a new key pair and download it
 
-### Milvus / UnifyIQ / DB
+### UnifyIQ Service and Dependencies
 
 - Launch an EC2 instance with the following settings:
     - AMI: Ubuntu Server 18.04 LTS (HVM), SSD Volume Type
