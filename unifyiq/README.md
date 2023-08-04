@@ -38,11 +38,16 @@
 
 2. Test the API using this
     ```commandline
-    curl -X POST "http://localhost:8080/get_answer" \
-     -H "Content-Type: application/x-www-form-urlencoded" \
-     -d "question=what is the status of project skynet?"
+   curl "http://localhost:8080/api/v1/connectors/list" 
     ```
-    
+   You should see this response:  
+   
+   > {"msg":"Missing Authorization Header"}  
+   
+   If API is not running, you will see this:  
+   
+   > curl: (7) Failed to connect to localhost port 8080 after 6 ms: Connection refused  
+   
 ### Setup and Run Admin UI
 
 Follow the instructions [here](/unifyiq/ui/README.md)
