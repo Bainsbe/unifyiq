@@ -9,8 +9,7 @@ We hold a strong conviction in the power of **open-source solutions** as the fou
 
 ## UnifyIQ Mission.
 
-[![Watch the video](resources/video_thumbnail.png)](resources/UnifyIQ_Final.mp4)
-
+https://github.com/unifyiq/unifyiq/assets/134311088/3bb5665f-bea3-418c-a525-2d6117ea9caf
 
 ## Getting Started
 Please follow the instructions for [Dev Setup](/unifyiq/README.md). For setting up the service on AWS, see [AWS Setup](/unifyiq/playbooks/README.md)
