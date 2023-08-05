@@ -33,11 +33,11 @@ UnifyIQ takes security issues very seriously. **Please do not file GitHub issues
 
 ## License
 
-Typebot is open-source under the GNU Affero General Public License Version 3 (AGPLv3). You will find more information about the license and how to comply with it [here](https://docs.typebot.io/self-hosting#license-requirements).
+UnifyIQ is open-source under the GNU Affero General Public License Version 3 (AGPLv3). You will find more information about the license and how to comply with it [here](https://docs.typebot.io/self-hosting#license-requirements).
 
 ## Thank You
 
-UnifyIQ would not be possible without the support and assistance of other open-source tools and companies.
+UnifyIQ would not be possible without the support of our contributors !
 
 <a href="https://github.com/unifyiq/unifyiq/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=unifyiq/unifyiq"/>
