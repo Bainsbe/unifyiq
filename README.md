@@ -7,38 +7,36 @@
 
 We hold a strong conviction in the power of **open-source solutions** as the foundation for enabling our knowledge assistant to seamlessly gather knowledge from a wide array of content sources. Our ultimate goal is to foster increased productivity for the dev teams through a personalized knowledge assistant. Our vision is that assistant will be able to answer questions from team's shared knowledge residing in apps like Slack, Wikis, Docs, etc. This assistant not only encompasses essential knowledge skills like smart Q&A and smart notifications but also empowers users to personalize and customize their assistant's skill set according to their unique needs and preferences. Together, let's unlock the potential of open-source collaboration to create a transformative knowledge assistant for all.
 
-### UnifyIQ Mission.
-![UnifyIQ Mission](resources/images/unify-iq-mission.jpg)
+## UnifyIQ Mission.
 
-### Getting Started
+[![Watch the video](resources/images/unify-iq-mission.jpg)](https://www.youtube.com/watch?v=4Qt_gpGfEJg)
+
+
+## Getting Started
 Please follow the instructions for [Dev Setup](/unifyiq/README.md). For setting up the service on AWS, see [AWS Setup](/unifyiq/playbooks/README.md)
 
-### UnifyIQ Tech Overview.
+## UnifyIQ Tech Overview.
 Please refer to this [document](https://docs.google.com/document/d/1FxmtSwrd_sa_Lt9MTp39k-zsXMc_qgqbCVd93q3b0oQ/edit?usp=sharing) for tech design/overview of UnifyIQ. Please feel free to leave any comments in the doc.
 
-### Join the UnifyIQ Community
-
-### Slack Workspace
+## Join the UnifyIQ Community
 
 Slack is best way to keep in touch with community and ask your questions. [Click here to join](https://join.slack.com/t/unifyiq/shared_invite/zt-1v4r8qd2b-6dc8BRKdJ3jemEY9iFnYVg). 
 
-### Email
-
 You can send your queries to info@unifyiq.ai
 
-### Contributing
+## Contributing
 
 If you've found a problem with UnifyIQ, please open a [GitHub issue](https://github.com/unifyiq/unifyiq/issues/new/choose). To contribute to UnifyIQ and see our Code of Conduct, please see the [contributing guide](CONTRIBUTING.md).
 
-### Security
+## Security
 
 UnifyIQ takes security issues very seriously. **Please do not file GitHub issues or post on our public forum for security vulnerabilities**. Email `security@unifyiq.ai` if you believe you have uncovered a vulnerability. In the message, try to provide a description of the issue and ideally a way of reproducing it. The security team will get back to you as soon as possible.
 
-### License
+## License
 
-MIT License
+Typebot is open-source under the GNU Affero General Public License Version 3 (AGPLv3). You will find more information about the license and how to comply with it [here](https://docs.typebot.io/self-hosting#license-requirements).
 
-### Thank You
+## Thank You
 
 UnifyIQ would not be possible without the support and assistance of other open-source tools and companies.
 
