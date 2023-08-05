@@ -9,7 +9,7 @@ We hold a strong conviction in the power of **open-source solutions** as the fou
 
 ## UnifyIQ Mission.
 
-[![Watch the video](resources/video_thumbnail.png)](https://www.youtube.com/watch?v=4Qt_gpGfEJg)
+[![Watch the video](resources/video_thumbnail.png)](resources/UnifyIQ_Final.mp4)
 
 
 ## Getting Started
