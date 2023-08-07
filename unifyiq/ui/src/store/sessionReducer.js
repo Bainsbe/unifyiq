@@ -54,7 +54,11 @@ export const requestOTP = createAsyncThunk('session/requestOTP', async (email, {
         body: JSON.stringify({email})
       })
       if (response.ok) {
-
+        const data = await response.json();
+        return data
+      } else {
+        const err = await response.json();
+        return err;
       }
     }
     catch (err) {

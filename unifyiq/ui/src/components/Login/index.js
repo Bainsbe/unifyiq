@@ -76,6 +76,16 @@ export const Login = () => {
             }
         }
     }
+
+    const handleResendOTP = async () => {
+        const response = await dispatch(sessionAction.requestOTP(email));
+        if (response.payload) {
+            const data = response.payload; 
+            if (!data.message) {
+                setVerifiedErr(data.error);
+            }
+        }
+    }
     return (
         <div className='w-full h-full bg-gray-50 flex flex-col'>
             <div className='flex flex-row justify-center h-[200px] items-center'>
@@ -171,7 +181,7 @@ export const Login = () => {
                             <CardFooter className='flex justify-center flex-col' >
                                     <Button colorScheme='purple' onClick={handleCLickSubmit}>Submit</Button>
                                     {verifiedErr && 
-                                    <Text className='flex justify-center my-[12px] cursor-pointer'>Resend OTP</Text>
+                                    <Text className='flex justify-center my-[12px] cursor-pointer' onClick={handleResendOTP}>Resend OTP</Text>
                                     }
                             </CardFooter>
                         </Card>
