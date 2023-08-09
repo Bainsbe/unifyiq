@@ -45,6 +45,34 @@ export const addConnectors = createAsyncThunk('connector/addConnectors', async (
     }
 })
 
+export const getConnector = createAsyncThunk('connector/getConnector', async (id) => {
+    const response = await fetch(`/api/v1/connectors/${id}`)
+    const data = await response.json(); 
+    return data
+})
+
+export const updateConnector = createAsyncThunk('connector/updateConnector', async (connector, { rejectWithValue }) => {
+    const { id, name, url_prefix, connector_type, last_fetched_ts, start_ts, is_enabled, config_json } = connector;
+    try {
+        const response = await fetch(`/api/v1/connectors/${id}`, {
+            method: 'PUT', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+            body: JSON.stringify({name, url_prefix, connector_type, last_fetched_ts, start_ts, is_enabled, config_json})
+        })
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            const err = await response.json();
+            return err
+        }
+    } catch (err) {
+        return rejectWithValue(err.error);
+    }
+})
 
 const connectorSlice = createSlice({
     name: 'connectors',
@@ -72,7 +100,28 @@ const connectorSlice = createSlice({
         }, 
         [addConnectors.rejected]: (state) => {
             state.loading = false;
-        }
+        },
+        [getConnector.pending]: (state) => {
+            state.loading = true;
+        }, 
+        [getConnector.fulfilled]: (state, { payload }) => {
+            state.loading = false; 
+            state.connectors = payload;
+        }, 
+        [getConnector.rejected]: (state) => {
+            state.loading = false;
+        },
+        [updateConnector.pending]: (state) => {
+            state.loading = true;
+        }, 
+        [updateConnector.fulfilled]: (state, { payload }) => {
+            state.loading = false; 
+            state.connectors = payload;
+        }, 
+        [updateConnector.rejected]: (state) => {
+            state.loading = false;
+        },
+
 
     }
 })

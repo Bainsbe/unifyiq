@@ -98,4 +98,39 @@ def get_confluence_api_key(config_json):
 
 def get_confluence_site(config_json):
     """Returns the confluence site(organization) name from config file `unifyiq.ini`."""
-    return config.get('Confluence', 'site')
+    return get_config.get('Confluence', 'site')
+
+def update_fetcher_config(id, name, connector_type, url_prefix, cron_expr, start_ts, last_fetched_ts, is_enabled, config_json):
+    with session_scope() as session: 
+        try: 
+            session.query(fetchers_configs).filter(fetchers_configs.c.id == id).update({
+                'name': name,
+                'connector_type': connector_type,
+                'url_prefix': url_prefix,
+                'cron_expr': cron_expr,
+                'start_ts': start_ts,
+                'last_fetched_ts': last_fetched_ts, 
+                'is_enabled': is_enabled,
+                'config_json': config_json
+            })
+            session.commit()
+            print('Update config successfully')
+        except IndentationError as e: 
+            session.rollback()
+            raise Exception(f'Error update config: {str(e)}')
+        
+def get_fetcher(id):
+    with session_scope() as session: 
+        fetcher = session.query(fetchers_configs).filter(fetchers_configs.c.id == id).first()
+        if fetcher != None: 
+            return {
+                'name': fetcher.name,
+                'connector_type': fetcher.connector_type,
+                'url_prefix': fetcher.url_prefix,
+                'cron_expr': fetcher.cron_expr,
+                'start_ts': fetcher.start_ts,
+                'last_fetched_ts': fetcher.last_fetched_ts, 
+                'is_enabled': fetcher.is_enabled,
+                'config_json': fetcher.config_json
+            }
+        return None

@@ -31,7 +31,7 @@ const SideBar = () => {
     ]
     
     return (
-        <nav className='w-[100px] px-[3px] py-[20px] relative h-full bg-white flex flex-col items-center justify-between'>
+        <nav className='w-[200px] px-[3px] py-[20px] relative h-full bg-white flex flex-col items-center justify-between'>
             <div>
                 <div className='flex items-center justify-center' onClick={handleClick}>
                     <img

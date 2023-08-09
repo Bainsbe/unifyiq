@@ -21,7 +21,7 @@ const Logout = () => {
         }
     }
     return (
-        <div className='absolute left-16 border flex justify-center top-0 w=[100px]' >
+        <div className='absolute left-24 border flex justify-center top-0 w=[100px]' >
             <Button colorScheme='purple' onClick={handleLogout}>Log out</Button>
         </div>
     )

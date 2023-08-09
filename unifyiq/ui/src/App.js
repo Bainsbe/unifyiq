@@ -7,6 +7,7 @@ import { Login } from './components/Login'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
+import ConnectorPage from './components/MainView/Connections/ConnectorPage'
 function App() {
   function RequireAuth({ children, redirectTo }) {
     const navigate = useNavigate()
@@ -66,6 +67,24 @@ function App() {
             <div className='App flex flex-row w-full h-full'>
               <SideBar />
               <NewConnection/>
+            </div>
+          }
+        />
+        <Route
+          path='connections/detail'
+          element={
+            <div className='App flex flex-row w-full h-full'>
+              <SideBar />
+              <ConnectorPage/>
+            </div>
+          }
+        />
+         <Route
+          path='connections/:id'
+          element={
+            <div className='App flex flex-row w-full h-full'>
+              <SideBar />
+              <ConnectorPage/>
             </div>
           }
         />
