@@ -6,7 +6,7 @@ from croniter import croniter
 
 from core.update_core import init_vector_store, update_index
 from fetchers.update_fetchers import update_fetchers
-from utils.configs import get_cron_schedule, reload_config
+from utils.configs import get_cron_schedule, reload_config, get_env
 from utils.database import unifyiq_config_db
 from utils.log_util import get_logger
 
@@ -19,12 +19,17 @@ def run_application(version):
         source_configs = unifyiq_config_db.get_fetcher_configs()
         reload_config()
         current_date_hod = version.strftime("%Y-%m-%dT%H-%M-00")
-        vector_store = init_vector_store()
+        logger.info("Initializing vector store for non dev env")
+        if get_env() != "dev":
+            vector_store = init_vector_store()
         for source_config in source_configs:
+            logger.info("Fetching for:" + source_config.connector_type)
             update_fetchers(source_config, current_date_hod)
-            update_index(vector_store, source_config, current_date_hod)
+            logger.info("Updating index for:" + source_config.connector_type)
+            if get_env() != "dev":
+                update_index(vector_store, source_config, current_date_hod)
     except Exception as e:
-        logger.error("Exception occurred: ", e)
+        logger.error("Error updating index: {}".format(e))
 
 
 cron_expression = get_cron_schedule()

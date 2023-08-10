@@ -14,15 +14,16 @@ from utils.constants import MAX_ATTEMPTS_FOR_SLACK_API_CALL
 from utils.database import unifyiq_config_db
 from utils.file_utils import skip_index_file_name
 from utils.log_util import get_logger
-from utils.time_utils import get_slack_ts
+from utils.time_utils import get_slack_ts, format_utc_timestamp
 
 THREE_DAYS = 3 * 24 * 60 * 60
 
+logger = get_logger(__name__)
 
 class SlackAdapter(BaseAdapter):
 
     def __init__(self, source_config, version):
-        super().__init__(source_config, version, get_logger(__name__))
+        super().__init__(source_config, version, logger)
         self.client = WebClient(token=get_slack_bot_token(source_config.config_json))
         self.bot_user_id = self.client.auth_test()['user_id']
         self.attempts = {}
@@ -45,6 +46,8 @@ class SlackAdapter(BaseAdapter):
 
     def fetch_channels(self, slack_start_ts, slack_end_ts, thread_lookback_ts):
         # TODO: Set start_ts / end_ts at channel level to handle failures
+        logger.info("Fetch channels : Start TS " + format_utc_timestamp(self.start_ts)
+                    + " End TS " + format_utc_timestamp(self.end_ts))
         self.attempts['fetch_channels'] = self.attempts.get('fetch_channels', 0) + 1
         try:
             cursor = None
@@ -52,6 +55,7 @@ class SlackAdapter(BaseAdapter):
                 # TODO: Remove public channel filter once we have a way to handle private channels
                 result = self.client.conversations_list(cursor=cursor, exclude_archived=True, types="public_channel")
                 channels = result["channels"]
+                logger.info("Channels {}".format(channels))
                 for channel in channels:
                     self.update_channel_info_metadata(channel)
                     unifyiq_bot_in_channel = self.fetch_channel_members(channel['id'])
@@ -260,5 +264,7 @@ if __name__ == '__main__':
     current_date_hod = datetime.now().strftime("%Y-%m-%dT00-00-00")
     for source_config in source_configs:
         if source_config.connector_type == constants.SLACK:
+            logger.info("Initializing Slack Adapter")
             slack = SlackAdapter(source_config, current_date_hod)
+            logger.info("Running Slack Fetcher")
             slack.fetcher()

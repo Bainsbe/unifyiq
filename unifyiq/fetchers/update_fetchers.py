@@ -6,19 +6,40 @@ from fetchers.adapters.slack.slack_adapter import SlackAdapter
 from utils import constants
 from utils.database import unifyiq_config_db
 from utils.file_utils import get_fetcher_output_path_from_config
+from utils.log_util import get_logger
 
+logger = get_logger(__name__)
 
 def update_fetchers(source_config, current_date_hod):
-    print(f"Fetching data for {source_config.name} - {source_config.connector_type}")
+    logger.info(f"Fetching data for {source_config.name} - {source_config.connector_type}")
+    adapter = None
     if source_config.connector_type == constants.SLACK:
-        adapter = SlackAdapter(source_config, current_date_hod)
+        logger.info("Initializing Slack Adapter")
+        try:
+            adapter = SlackAdapter(source_config, current_date_hod)
+            logger.info("Initialized SlackAdapter")
+        except Exception as e:
+            logger.error("Error initializing Slack Adapter: {}".format(e))
     elif source_config.connector_type == constants.CONFLUENCE:
-        adapter = ConfluenceAdapter(source_config, current_date_hod)
+        try:
+            adapter = ConfluenceAdapter(source_config, current_date_hod)
+            logger.info("Initialized ConfluenceAdapter")
+        except Exception as e:
+            logger.error("Error initializing ConfluenceAdapter: {}".format(e))
     else:
-        raise Exception(f"Unknown connector type: {source_config.connector_type}")
-    adapter.fetcher()
-    print(
-        f"Done fetching data from {source_config.name} to {get_fetcher_output_path_from_config(source_config, current_date_hod)}")
+        logger.error(f"Unknown connector type: {source_config.connector_type}")
+
+    if adapter is not None:
+        try:
+            logger.info("Calling fetch on:{}".format(adapter))
+            adapter.fetcher()
+            logger.info(
+                f"Done fetching data from {source_config.name} to {get_fetcher_output_path_from_config(source_config, current_date_hod)}")
+        except Exception as e:
+            logger.error("Error fetching: {}".format(e))
+    else:
+        logger.info("No adapter found, nothing to fetch")
+
 
 
 if __name__ == '__main__':
