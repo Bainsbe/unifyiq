@@ -37,7 +37,7 @@ const NewForm = () => {
     const dispatch = useDispatch();
     const [config, setConfig] = useState();
     const [configSettings, setConfigSettings] = useState({});
-    const [configValues, setConfigValues] = useState([]);
+    const [configValues, setConfigValues] = useState({});
     const [configErrors, setConfigErrors] = useState({});
 
     useEffect(() => {
@@ -62,7 +62,7 @@ const NewForm = () => {
     }, [source])
 
     const handleConfigChange = (name) => (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         setConfigValues({
             ...configValues,
             [name]: value
@@ -78,6 +78,7 @@ const NewForm = () => {
         setUrlErr('');
         setDateErr('');
         setErr('');
+        setConfigErrors('')
         if (name.trim() === '' || name.length > 45) {
             setNameErr('Name can not be empty or longer than 45 characters.');
         }
@@ -89,19 +90,34 @@ const NewForm = () => {
         }
 
         let errorObject = {};
-
-        // This will check all the config fields to ensure none of them are empty.
-        Object.entries(configValues).forEach(([key, value]) => {
-            if (!value || value.trim() === '') {
-                errorObject[key] = true;
+        
+        if ((source.toLowerCase() === 'slack' || source.toLowerCase() === 'confluence') & Object.keys(configValues).length < 4) {
+            
+            if (Object.keys(configValues).length === 0) {
+                for (let ele of config.configs) {
+                    errorObject[ele.name] = true
+                }
+            } else {
+                Object.entries(configValues).forEach(([key, value]) => {
+                    const configs = config.configs;
+                    for (let ele of configs) {
+                        if (ele.name === key & (!value || value.trim() === '')) {
+                            errorObject[key] = true;
+                        } else if (ele.name !== key) {
+                            errorObject[ele.name] = true;
+                        }
+                    }
+                });
             }
-        });
-
+        }
+        
         setConfigErrors(errorObject);
 
         // Check if we have any error, if so, return and don't submit the form.
-        if (Object.keys(errorObject).length > 0) return;
-
+        if (Object.keys(errorObject).length > 0) {
+            return
+        } 
+        console.log(configValues)
 
         if (name.trim() !== '' && name.length <= 45 && url.trim() !== '' && isValidUrl(url) && date.trim() !== '') {
             const info = {

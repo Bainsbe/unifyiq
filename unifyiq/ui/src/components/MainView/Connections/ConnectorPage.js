@@ -36,9 +36,8 @@ const ConnectorPage = () => {
     const [dateErr, setDateErr] = useState('');
     const [config, setConfig] = useState();
     const [configSettings, setConfigSettings] = useState({});
-    const [configValues, setConfigValues] = useState([]);
+    const [configValues, setConfigValues] = useState({});
     const [configErrors, setConfigErrors] = useState({});
-    const [configValue, setConfigValue] = useState({})
     const dispatch = useDispatch();
     const [connector, setConnector] = useState({})
     const handleCancel = () => {
@@ -62,6 +61,7 @@ const ConnectorPage = () => {
         setUrlErr('');
         setDateErr('');
         setErr('');
+        setConfigErrors('');
         if (name.trim() === '' || name.length > 45) {
             setNameErr('Name can not be empty or longer than 45 characters.');
         }
@@ -73,18 +73,20 @@ const ConnectorPage = () => {
         }
 
         let errorObject = {};
-
-        // This will check all the config fields to ensure none of them are empty.
-        Object.entries(configValues).forEach(([key, value]) => {
-            if (!value || value.trim() === '') {
+        
+        Object.entries(configValues).forEach(([key, value]) => {           
+            if ((!value || value.trim() === '')) {
                 errorObject[key] = true;
-            }
+            } 
         });
-
+        
+        
         setConfigErrors(errorObject);
 
         // Check if we have any error, if so, return and don't submit the form.
-        if (Object.keys(errorObject).length > 0) return;
+        if (Object.keys(errorObject).length > 0) {
+            return
+        } 
 
 
         if (name.trim() !== '' && name.length <= 45 && url.trim() !== '' && isValidUrl(url) && date.trim() !== '') {
@@ -113,7 +115,11 @@ const ConnectorPage = () => {
             .then(response => {
                 // response.json()
                 const connector = response.payload;
-                const data = connector.config_json;
+                let data = {}
+                if (connector.config_json !== null) {
+                    data = JSON.parse(connector.config_json);
+                } 
+               
                 const dateData = connector.start_ts; 
                 const date = new Date(dateData * 1000);
                 const formattedDate = date.toISOString().split('T')[0];
@@ -122,7 +128,7 @@ const ConnectorPage = () => {
                 setUrl(connector.url_prefix);
                 setDate(formattedDate);
                 setSource(connector.connector_type);
-                setConfigValue(data);
+                setConfigValues(data);
             });
     },[dispatch, id, setConfig, setConnector, setName, setUrl, setDate, setSource])
 
@@ -165,9 +171,15 @@ const ConnectorPage = () => {
                                                         type='text'
                                                         value={name}
                                                         onChange={e => setName(e.target.value)}
-                                                    />
+                                                        isInvalid={nameErr !== ''}
+                                                />
                                                 </FormControl>
-                                            
+
+                                            </Td>
+                                            <Td>
+                                            {
+                                                nameErr !== '' && <Text color='red' className='mt-2'>{nameErr}</Text>
+                                            }
                                             </Td>
                                         </Tr>
                                         <Tr>
@@ -189,16 +201,17 @@ const ConnectorPage = () => {
                                                 }
                                              
                                             </Select>
-                                            </Td>
+                                            </Td> 
+                                       
                                         </Tr>
                                         {
-                                            (config && config.configs.map((item, index) => (
+                                            (Object.keys(configValues).length >= 0 && config && config.configs.map((item, index) => (
                                                <Tr>
                                                     <Td className='font-bold w-1/4'>{item.display_name}</Td>
                                                     <Td>
                                                         <FormControl>
                                                             <Input
-                                                                placeholder={`Enter ${item.display_name}`}
+                                                                placeholder={configValues[item.name] ? `${configValues[item.name]}` : `Enter ${item.display_name}`}
                                                                 value={configValues[item.name]}
                                                                 isRequired={true}
                                                                 isInvalid={configErrors[item.name]}
@@ -224,8 +237,13 @@ const ConnectorPage = () => {
                                                         type='date'
                                                         value={date}
                                                         onChange={e => setDate(e.target.value)}
-                                                    />
+                                                />
                                                 </FormControl>
+                                            </Td>
+                                            <Td>
+                                                {
+                                                    dateErr !== '' && <Text color='red' className='mt-2'>{dateErr}</Text>
+                                                }
                                             </Td>
                                         </Tr>
                                         <Tr>
@@ -240,8 +258,13 @@ const ConnectorPage = () => {
                                                         type='text'
                                                         value={url}
                                                         onChange={e => setUrl(e.target.value)}
-                                                    />
+                                                />
                                                 </FormControl>
+                                            </Td>
+                                            <Td>
+                                                {
+                                                    urlErr !== '' && <Text color='red' className='mt-2'>{urlErr}</Text>
+                                                }
                                             </Td>
                                         </Tr>
                                         <Tr>
