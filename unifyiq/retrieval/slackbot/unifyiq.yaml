@@ -4,7 +4,7 @@ _metadata:
 display_information:
   name: unifyiq
   description: Knowledge Assistant for Technical Teams
-  background_color: "#d982b5"
+  background_color: "#004492"
 features:
   bot_user:
     display_name: UnifyIQ
