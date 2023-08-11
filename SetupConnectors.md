@@ -6,7 +6,7 @@
    Option ![Create Slack Bot](/resources/images/slack_bot_create.png)
 4. Choose the workspace if you are using multiple workspaces
 5. Choose YAML
-6. Upload the [manifest](unifyiq.yaml)
+6. Upload the [manifest](unifyiq/retrieval/slackbot/unifyiq.yaml)
 7. Create the app
 8. Click on **"Install to Workspace"** button to install the app. Choose **"Allow"**. 
 9. The following credentials need to be entered in Admin UI. Open Admin UI in a new tab and follow instructions on next step.
